@@ -17,7 +17,7 @@ module.exports = function (cb) {
     } else {
       exec('node --v8-options', function (err, result) {
         var flags = result.match(/\s\s--(\w+)/gm).map(function (match) {
-          return match.substring(4);
+          return match.substring(2);
         });
         fs.writeFile(tmpfile, JSON.stringify(flags), { encoding:'utf8' },
           function (writeErr) {
