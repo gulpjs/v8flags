@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const expect = require('chai').expect;
 
-const v8flags = require('../');
+const v8flags = require('./');
 
 const tmpfile = path.resolve(process.versions.v8+'.flags.json');
 
