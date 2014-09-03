@@ -1,6 +1,6 @@
 {
   "name": "v8flags",
-  "description": "List available v8 flags.",
+  "description": "Get available v8 flags.",
   "version": "0.3.0",
   "homepage": "https://github.com/tkellen/node-v8flags",
   "author": {
@@ -20,6 +20,10 @@
       "url": "https://github.com/tkellen/node-v8flags/blob/master/LICENSE"
     }
   ],
+  "scripts": {
+    "install": "node fetch.js",
+    "test": "mocha -R spec test/index.js"
+  },
   "main": "index.js",
   "engines": {
     "node": ">= 0.8.0"
@@ -27,5 +31,9 @@
   "keywords": [
     "v8 flags",
     "harmony flags"
-  ]
+  ],
+  "devDependencies": {
+    "chai": "~1.9.1",
+    "mocha": "~1.21.4"
+  }
 }
