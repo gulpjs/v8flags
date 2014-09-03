@@ -19,7 +19,7 @@ if (!fs.existsSync(tmpfile)) {
           if (writeErr) {
             throw new Error(writeErr);
           } else {
-            console.log('v8flags for node '+version+' cached.');
+            console.log('flags for v8 '+version+' cached.');
           }
         }
       );
