@@ -1,4 +1,4 @@
-# v8flags
+# v8flags  [![Build Status](https://secure.travis-ci.org/tkellen/node-v8flags.png)](http://travis-ci.org/tkellen/node-v8flags)
 > Get available v8 flags.
 
 [![NPM](https://nodei.co/npm/v8flags.png)](https://nodei.co/npm/v8flags/)
