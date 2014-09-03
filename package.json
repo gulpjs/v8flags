@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "install": "node fetch.js",
-    "test": "mocha -R spec test/index.js"
+    "test": "mocha -R spec test.js"
   },
   "main": "index.js",
   "engines": {
