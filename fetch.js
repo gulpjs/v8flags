@@ -8,7 +8,7 @@ const version = process.versions.v8;
 const tmpfile = path.join(__dirname, version+'.flags.json');
 
 if (!fs.existsSync(tmpfile)) {
-  exec(nodePath+' --v8-options', function (execErr, result) {
+  exec('"'+nodePath+'" --v8-options', function (execErr, result) {
     var flags;
     if (execErr) {
       throw new Error(execErr);
