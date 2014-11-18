@@ -25,3 +25,4 @@ v8flags.fetch(); // [ '--use_strict',
 * 2014-09-02 - v0.2.0 - cache flags
 * 2014-09-02 - v0.3.0 - keep -- in flag names
 * 2014-09-03 - v1.0.0 - first major version release
+* 2014-11-17 - v1.0.2 - get node executable from `process.env._`
