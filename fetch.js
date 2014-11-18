@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 
 const exec = require('child_process').exec;
+const nodepath = process.env._;
 const version = process.versions.v8;
 const tmpfile = path.join(__dirname, version+'.flags.json');
 
 if (!fs.existsSync(tmpfile)) {
-  exec('node --v8-options', function (execErr, result) {
+  exec(nodepath+' --v8-options', function (execErr, result) {
     var flags;
     if (execErr) {
       throw new Error(execErr);
