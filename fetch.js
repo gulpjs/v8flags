@@ -3,7 +3,7 @@ const path = require('path');
 
 const exec = require('child_process').exec;
 // this is from the env of npm, not node
-const nodePath = process.env.NODE;
+const nodePath = process.execPath;
 const version = process.versions.v8;
 const tmpfile = path.join(__dirname, version+'.flags.json');
 
