@@ -29,3 +29,4 @@ v8flags.fetch(); // [ '--use_strict',
 * 2014-11-17 - v1.0.3 - get node executable during npm install via `process.env.NODE`
 * 2014-11-18 - v1.0.4 - wrap node executable path in quotes
 * 2014-11-26 - v1.0.5 - get node executable from `process.execPath`
+* 2014-12-09 - v1.0.6 - revert to 1.0.0 behavior
