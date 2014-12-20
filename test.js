@@ -5,7 +5,7 @@ const expect = require('chai').expect;
 
 const v8flags = require('./');
 
-const tmpfile = path.resolve(process.versions.v8+'.flags.json');
+const tmpfile = path.resolve('cache', process.versions.v8+'.flags.json');
 
 describe('v8flags', function () {
 
