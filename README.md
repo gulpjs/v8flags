@@ -21,12 +21,13 @@ v8flags.fetch(); // [ '--use_strict',
 
 ## Release History
 
-* 2014-05-09 - v0.1.0 - initial release
-* 2014-09-02 - v0.2.0 - cache flags
-* 2014-09-02 - v0.3.0 - keep -- in flag names
-* 2014-09-03 - v1.0.0 - first major version release
-* 2014-11-17 - v1.0.2 - get node executable from `process.env._`
-* 2014-11-17 - v1.0.3 - get node executable during npm install via `process.env.NODE`
-* 2014-11-18 - v1.0.4 - wrap node executable path in quotes
-* 2014-11-26 - v1.0.5 - get node executable from `process.execPath`
+* 2014-12-20 - v1.0.7 - pre-cache flags for every version of node from 0.8 to 0.11
 * 2014-12-09 - v1.0.6 - revert to 1.0.0 behavior
+* 2014-11-26 - v1.0.5 - get node executable from `process.execPath`
+* 2014-11-18 - v1.0.4 - wrap node executable path in quotes
+* 2014-11-17 - v1.0.3 - get node executable during npm install via `process.env.NODE`
+* 2014-11-17 - v1.0.2 - get node executable from `process.env._`
+* 2014-09-03 - v1.0.0 - first major version release
+* 2014-09-02 - v0.3.0 - keep -- in flag names
+* 2014-09-02 - v0.2.0 - cache flags
+* 2014-05-09 - v0.1.0 - initial release
