@@ -21,6 +21,7 @@ v8flags.fetch(); // [ '--use_strict',
 
 ## Release History
 
+* 2014-12-22 - v1.0.8 - exclude `--help` flag
 * 2014-12-20 - v1.0.7 - pre-cache flags for every version of node from 0.8 to 0.11
 * 2014-12-09 - v1.0.6 - revert to 1.0.0 behavior
 * 2014-11-26 - v1.0.5 - get node executable from `process.execPath`
