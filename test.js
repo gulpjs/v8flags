@@ -5,18 +5,24 @@ const expect = require('chai').expect;
 
 const v8flags = require('./');
 
-const tmpfile = path.resolve('cache', process.versions.v8+'.flags.json');
+const tmpfile = path.resolve(process.versions.v8+'.flags.json');
 
 describe('v8flags', function () {
 
-  it('should have created a temp file during installation', function() {
-    expect(fs.existsSync(tmpfile)).to.be.true;
+  it('should call back with the v8 flags for the running process', function (done) {
+    // if i could meaningfully test this, this libray wouldn't exist
+    v8flags(function (err, flags) {
+      expect(flags).to.be.a('array');
+      done();
+    });
   });
 
-  describe('::fetch', function () {
-    it('should require v8 flags temp file', function () {
-      expect(require(tmpfile)).to.deep.equal(v8flags.fetch());
-    })
+  it('should cache v8 flags after first run', function (done) {
+    v8flags(function (err, flags) {
+      expect(fs.existsSync(tmpfile)).to.be.true;
+      done();
+    });
   });
+
 
 });
