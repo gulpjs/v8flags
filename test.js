@@ -1,13 +1,18 @@
-const path = require('path');
+const os = require('os');
 const fs = require('fs');
+const path = require('path');
 
 const expect = require('chai').expect;
 
 const v8flags = require('./');
 
-const tmpfile = path.resolve(process.versions.v8+'.flags.json');
+const tmpfile = path.resolve(os.tmpdir(), process.versions.v8+'.flags.json');
 
 describe('v8flags', function () {
+
+  after(function () {
+    fs.unlinkSync(tmpfile);
+  });
 
   it('should call back with the v8 flags for the running process', function (done) {
     // if i could meaningfully test this, this libray wouldn't exist
