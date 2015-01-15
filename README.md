@@ -23,6 +23,7 @@ v8flags(function (err, results) {
 
 ## Release History
 
+* 2015-01-15 - v2.0.1 - store temp file in `os.tmpdir()`, drop support for node 0.8
 * 2015-01-15 - v2.0.0 - make the stupid thing async
 * 2014-12-22 - v1.0.8 - exclude `--help` flag
 * 2014-12-20 - v1.0.7 - pre-cache flags for every version of node from 0.8 to 0.11
