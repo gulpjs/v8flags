@@ -8,7 +8,10 @@ const exclusions = ['--help'];
 
 module.exports = function (cb) {
   try {
-    cb(null, require(tmpfile));
+    var flags = require(tmpfile);
+    process.nextTick(function(){
+      cb(null, flags);
+    });
   } catch (e) {
     execFile(process.execPath, ['--v8-options'], function (execErr, result) {
       var flags;
