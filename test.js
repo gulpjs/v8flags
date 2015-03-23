@@ -31,7 +31,7 @@ describe('v8flags', function () {
   });
 
   it('should not fail with a missing $TMP dir on a Linux os', function (done) {
-    var cmd ="TMP=\"$(pwd)/tmp\" node -e \"require('v8flags')(function(err, flags){if(err) throw err; else console.log(flags.length);})\"";
+    var cmd ="TMP=\"$(pwd)/tmp\" node -e \"require('./index.js')(function(err, flags){if(err) throw err; else console.log(flags.length);})\"";
     exec(cmd, function (err, stdout, stderr) {
       expect(err).to.be.null;
       done();
