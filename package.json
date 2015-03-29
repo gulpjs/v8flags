@@ -34,5 +34,8 @@
   "devDependencies": {
     "chai": "~1.9.1",
     "mocha": "~1.21.4"
+  },
+  "dependencies": {
+    "user-home": "^1.1.1"
   }
 }
