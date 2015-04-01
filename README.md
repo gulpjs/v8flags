@@ -23,6 +23,7 @@ v8flags(function (err, results) {
 
 ## Release History
 
+* 2015-03-31 - v2.0.3 - prefer to store config files in user home over tmp
 * 2015-01-18 - v2.0.2 - keep his dark tentacles contained
 * 2015-01-15 - v2.0.1 - store temp file in `os.tmpdir()`, drop support for node 0.8
 * 2015-01-15 - v2.0.0 - make the stupid thing async
