@@ -23,6 +23,7 @@ v8flags(function (err, results) {
 
 ## Release History
 
+* 2015-04-16 - v2.0.4 - when concurrent processes are run and no config exists, don't append to the cached config.
 * 2015-03-31 - v2.0.3 - prefer to store config files in user home over tmp
 * 2015-01-18 - v2.0.2 - keep his dark tentacles contained
 * 2015-01-15 - v2.0.1 - store temp file in `os.tmpdir()`, drop support for node 0.8
