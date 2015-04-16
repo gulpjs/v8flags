@@ -2,6 +2,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
+const async = require('async');
 const expect = require('chai').expect;
 
 const env = process.env;
@@ -27,6 +28,16 @@ describe('v8flags', function () {
         fs.unlinkSync(configfile);
         done();
       });
+    });
+  });
+
+  it('should not append the file when two calls happen concurrently and the config file does not exist', function (done) {
+    var v8flags = require('./');
+    var configfile = path.resolve(require('user-home'), v8flags.configfile);
+    async.parallel([v8flags, v8flags], function (err, result) {
+      require(configfile);
+      fs.unlinkSync(configfile);
+      done();
     });
   });
 
