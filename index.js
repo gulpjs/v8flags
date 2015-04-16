@@ -1,4 +1,6 @@
-// this entire module is depressing.
+// this entire module is depressing. i should have spent my time learning
+// how to patch v8 so that these options would just be available on the
+// process object.
 
 const os = require('os');
 const fs = require('fs');
@@ -26,6 +28,10 @@ function fail (err) {
 function openConfig (cb) {
   var userHome = require('user-home');
   var configpath = path.join(userHome || os.tmpdir(), configfile);
+  // open file for reading and appending. if the filesize is zero
+  // we will spawn node with --v8-options and write the parsed
+  // options to a file. if it is larger than zero, we'll just read
+  // the file and be done.
   fs.open(configpath, 'a+', function (err, fd) {
     if (err) {
       return cb(fail(err));
@@ -46,15 +52,20 @@ function writeConfig (fd, cb) {
       return exclusions.indexOf(name) === -1;
     });
     var buf = new Buffer(JSON.stringify(flags));
-
-    fs.write(fd, buf, 0, buf.length, null, function (writeErr, bytesWritten, buffer) {
-      fs.close(fd, function (closeErr) {
-        var err = writeErr || closeErr;
-        if (err) {
-          return cb(fail(err));
-        }
-        return cb(null, JSON.parse(buffer.toString()));
-      });
+    fs.write(fd, buf, 0, buf.length, 0, function (writeErr, bytesWritten, buffer) {
+      // linux ignores positional arguments when files are open in append mode.
+      // the truncate call below ensures that multiple concurrent processes
+      // trying to write to this config will not result in a file with the
+      // contents appended multiple times.
+      fs.ftruncate(fd, buf.length, function (truncErr) {
+        fs.close(fd, function (closeErr) {
+          var err = truncErr || writeErr || closeErr;
+          if (err) {
+            return cb(fail(err));
+          }
+          return cb(null, JSON.parse(buffer.toString()));
+        });
+      })
     });
   });
 }
