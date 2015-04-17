@@ -17,7 +17,8 @@ describe('v8flags', function () {
 
   it('should cache and call back with the v8 flags for the running process', function (done) {
     var v8flags = require('./');
-    var configfile = path.resolve(require('user-home'), v8flags.configfile);
+    var configfile = v8flags.getFilePath(require('user-home'));
+
     v8flags(function (err, flags) {
       expect(flags).to.be.a('array');
       expect(fs.existsSync(configfile)).to.be.true;
@@ -33,7 +34,8 @@ describe('v8flags', function () {
 
   it('should not append the file when two calls happen concurrently and the config file does not exist', function (done) {
     var v8flags = require('./');
-    var configfile = path.resolve(require('user-home'), v8flags.configfile);
+    var configfile = v8flags.getFilePath(require('user-home'));
+
     async.parallel([v8flags, v8flags], function (err, result) {
       require(configfile);
       fs.unlinkSync(configfile);
