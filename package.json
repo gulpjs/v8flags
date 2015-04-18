@@ -21,7 +21,7 @@
     }
   ],
   "scripts": {
-    "test": "mocha -R spec test.js"
+    "test": "mocha --no-exit -R spec test.js"
   },
   "main": "index.js",
   "engines": {

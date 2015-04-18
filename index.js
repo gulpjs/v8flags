@@ -25,9 +25,18 @@ function fail (err) {
   return err;
 }
 
+function getFilePath(home) {
+  var userHome = home || os.tmpdir();
+  if (os.platform() === "win32" && home != null) {
+    userHome = path.join(userHome, "AppData", "Local");
+  }
+
+  return path.join(userHome, configfile);
+}
+
 function openConfig (cb) {
   var userHome = require('user-home');
-  var configpath = path.join(userHome || os.tmpdir(), configfile);
+  var configpath = getFilePath(userHome);
   // open file for reading and appending. if the filesize is zero
   // we will spawn node with --v8-options and write the parsed
   // options to a file. if it is larger than zero, we'll just read
@@ -102,3 +111,4 @@ module.exports = function (cb) {
 };
 
 module.exports.configfile = configfile;
+module.exports.getFilePath = getFilePath;
