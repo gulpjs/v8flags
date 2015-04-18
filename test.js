@@ -36,11 +36,13 @@ describe('v8flags', function () {
     });
   });
 
-  it('should not append the file when multiple calls happen concurrently and the config file does not yet exist', function (done) {
+  it('should create config correctly when multiple concurrent calls happen and it does not exist yet', function (done) {
     var v8flags = require('./');
     var configfile = path.resolve(require('user-home'), v8flags.configfile);
-    async.parallel([v8flags, v8flags, v8flags], function (err, result) {
-      v8flags(function (err2, res) {
+    async.parallel([v8flags, v8flags], function (err, results) {
+      v8flags(function (err, final) {
+        expect(results[0]).to.deep.equal(final);
+        expect(results[1]).to.deep.equal(final);
         done();
       });
     });
