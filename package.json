@@ -21,7 +21,7 @@
     }
   ],
   "scripts": {
-    "test": "mocha -R spec test.js"
+    "test": "_mocha -R spec test.js"
   },
   "main": "index.js",
   "engines": {
