@@ -9,9 +9,15 @@ const env = process.env;
 
 describe('v8flags', function () {
 
-  var v8flags;
-
-  beforeEach(function () {
+  afterEach(function () {
+    delete require.cache[require.resolve('user-home')];
+    var v8flags = require('./');
+    try {
+      [
+        path.resolve(require('user-home'), v8flags.configfile),
+        path.resolve(os.tmpdir(), v8flags.configfile)
+      ].map(fs.unlinkSync);
+    } catch (e) {}
     delete require.cache[require.resolve('user-home')];
   });
 
@@ -25,19 +31,18 @@ describe('v8flags', function () {
       fs.writeFileSync(configfile, JSON.stringify({cached:true}));
       v8flags(function (cacheErr, cachedFlags) {
         expect(cachedFlags).to.deep.equal({cached:true});
-        fs.unlinkSync(configfile);
         done();
       });
     });
   });
 
-  it('should not append the file when two calls happen concurrently and the config file does not exist', function (done) {
+  it('should not append the file when multiple calls happen concurrently and the config file does not yet exist', function (done) {
     var v8flags = require('./');
     var configfile = path.resolve(require('user-home'), v8flags.configfile);
-    async.parallel([v8flags, v8flags], function (err, result) {
-      require(configfile);
-      fs.unlinkSync(configfile);
-      done();
+    async.parallel([v8flags, v8flags, v8flags], function (err, result) {
+      v8flags(function (err2, res) {
+        done();
+      });
     });
   });
 
@@ -54,7 +59,6 @@ describe('v8flags', function () {
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function (err, flags) {
       expect(fs.existsSync(configfile)).to.be.true;
-      fs.unlinkSync(configfile);
       done();
     });
   });
