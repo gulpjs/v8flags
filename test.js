@@ -7,18 +7,7 @@ const expect = require('chai').expect;
 
 const env = process.env;
 
-function getConfigPath() {
-  var v8flags = require('./');
-  var userHome = require('user-home');
-  var datapath = userHome || os.tmpdir();
-  if (process.platform === 'win32' && userHome) {
-    datapath = path.join(datapath, 'AppData', 'Local');
-  }
-  else if (userHome) {
-    datapath = path.join(datapath, '.cache');
-  }
-  return path.join(datapath, v8flags.configfile);
-}
+const v8flags = require('./');
 
 describe('v8flags', function () {
 
@@ -27,7 +16,7 @@ describe('v8flags', function () {
     var v8flags = require('./');
     try {
       [
-        path.resolve(getConfigPath()),
+        path.resolve(v8flags.configPath()),
         path.resolve(os.tmpdir(), v8flags.configfile)
       ].map(fs.unlinkSync);
     } catch (e) {}
@@ -36,7 +25,7 @@ describe('v8flags', function () {
 
   it('should cache and call back with the v8 flags for the running process', function (done) {
     var v8flags = require('./');
-    var configfile = path.resolve(getConfigPath());
+    var configfile = path.resolve(v8flags.configPath());
     v8flags(function (err, flags) {
       expect(flags).to.be.a('array');
       expect(fs.existsSync(configfile)).to.be.true;
@@ -51,7 +40,7 @@ describe('v8flags', function () {
 
   it('should create config correctly when multiple concurrent calls happen and it does not exist yet', function (done) {
     var v8flags = require('./');
-    var configfile = path.resolve(getConfigPath());
+    var configfile = path.resolve(v8flags.configPath());
     async.parallel([v8flags, v8flags], function (err, results) {
       v8flags(function (err, final) {
         expect(results[0]).to.deep.equal(final);
