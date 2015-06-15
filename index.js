@@ -27,7 +27,14 @@ function fail (err) {
 
 function openConfig (cb) {
   var userHome = require('user-home');
-  var configpath = path.join(userHome || os.tmpdir(), configfile);
+  var datapath = userHome || os.tmpdir();
+  if (process.platform === 'win32' && userHome) {
+    datapath = path.join(datapath, 'AppData', 'Local');
+  }
+  else if (userHome) {
+    datapath = path.join(datapath, '.cache');
+  }
+  var configpath = path.join(datapath, configfile);
   var content;
   try {
     content = require(configpath);
