@@ -5,16 +5,10 @@
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
-
 const execFile = require('child_process').execFile;
 const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME;
-
-// include v8 version to ensure this works across upgrades of node
-// include username to ensure this works across multiple users when
-// a home directory can't be found.
-const configFile = '.v8flags.'+process.versions.v8+'.'+user+'.json';
-
+const configfile = '.v8flags.'+process.versions.v8+'.'+user+'.json';
 const exclusions = ['--help'];
 
 const failureMessage = [
@@ -31,25 +25,17 @@ function fail (err) {
   return err;
 }
 
-function configPath () {
-  const userHome = require('user-home');
-  const isWindows = process.platform === 'win32';
-  const baseDir = userHome || os.tmpdir();
-  const cachePath = isWindows ? path.join('AppData', 'Local') : '.cache';
-  const configPath = userHome ? path.join(baseDir, cachePath) : baseDir;
-  return path.join(configPath, configFile);
-}
-
 function openConfig (cb) {
+  var userHome = require('user-home');
+  var configpath = path.join(userHome || os.tmpdir(), configfile);
   var content;
-  var file = configPath();
   try {
-    content = require(file);
+    content = require(configpath);
     process.nextTick(function () {
       cb(null, content);
     });
   } catch (e) {
-    fs.open(file, 'w+', function (err, fd) {
+    fs.open(configpath, 'w+', function (err, fd) {
       if (err) {
         return cb(fail(err));
       }
@@ -94,6 +80,4 @@ module.exports = function (cb) {
   });
 };
 
-// export .configfile for backwards compatability
-module.exports.configfile = module.exports.configFile = configFile;
-module.exports.configPath = configPath;
+module.exports.configfile = configfile;
