@@ -1,4 +1,3 @@
-const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,19 +6,26 @@ const expect = require('chai').expect;
 
 const env = process.env;
 
+function cleanup () {
+  delete require.cache[require.resolve('os')];
+  delete require.cache[require.resolve('user-home')];
+  var os = require('os')
+  var v8flags = require('./');
+  try {
+    [
+      path.resolve(require('user-home'), v8flags.configfile),
+      path.resolve(os.tmpdir(), v8flags.configfile),
+      path.resolve('/tmp', v8flags.configfile)
+    ].map(fs.unlinkSync);
+  } catch (e) {}
+  delete require.cache[require.resolve('os')];
+    delete require.cache[require.resolve('user-home')];
+}
+
 describe('v8flags', function () {
 
-  afterEach(function () {
-    delete require.cache[require.resolve('user-home')];
-    var v8flags = require('./');
-    try {
-      [
-        path.resolve(require('user-home'), v8flags.configfile),
-        path.resolve(os.tmpdir(), v8flags.configfile)
-      ].map(fs.unlinkSync);
-    } catch (e) {}
-    delete require.cache[require.resolve('user-home')];
-  });
+  beforeEach(cleanup)
+  afterEach(cleanup);
 
   it('should cache and call back with the v8 flags for the running process', function (done) {
     var v8flags = require('./');
@@ -55,6 +61,7 @@ describe('v8flags', function () {
     delete env.USER;
     delete env.LNAME;
     delete env.USERNAME;
+    var os = require('os');
     var v8flags = require('./');
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function (err, flags) {
@@ -63,4 +70,21 @@ describe('v8flags', function () {
     });
   });
 
+  it('should return flags even if an error is thrown', function (done) {
+    delete env.HOME;
+    delete env.USERPROFILE;
+    delete env.HOMEDRIVE;
+    delete env.HOMEPATH;
+    delete env.LOGNAME;
+    delete env.USER;
+    delete env.LNAME;
+    delete env.USERNAME;
+    env.TMPDIR = env.TEMP = env.TMP = '/nope';
+    var v8flags = require('./');
+    v8flags(function (err, flags) {
+      expect(err).to.not.be.null;
+      expect(flags).to.not.be.undefined;
+      done();
+    });
+  });
 });
