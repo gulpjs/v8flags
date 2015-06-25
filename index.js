@@ -77,7 +77,7 @@ function writeConfig (fd, flags, cb) {
     fs.close(fd, function (closeErr) {
       var err = writeErr || closeErr;
       if (err) {
-        return cb(fall(err), flags);
+        return cb(fail(err), flags);
       }
       return cb(null, flags);
     });
