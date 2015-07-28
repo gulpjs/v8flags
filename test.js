@@ -6,6 +6,21 @@ const expect = require('chai').expect;
 
 const env = process.env;
 
+function eraseHome() {
+  delete env.HOME;
+  delete env.USERPROFILE;
+  delete env.HOMEDRIVE;
+  delete env.HOMEPATH;
+  delete env.LOGNAME;
+  delete env.USER;
+  delete env.LNAME;
+  delete env.USERNAME;
+}
+
+function setTemp() {
+  env.TMPDIR = env.TEMP = env.TMP = '/nope';
+}
+
 function cleanup () {
   delete require.cache[require.resolve('os')];
   delete require.cache[require.resolve('user-home')];
@@ -19,7 +34,8 @@ function cleanup () {
     ].map(fs.unlinkSync);
   } catch (e) {}
   delete require.cache[require.resolve('os')];
-    delete require.cache[require.resolve('user-home')];
+  delete require.cache[require.resolve('user-home')];
+  delete process.versions.electron;
 }
 
 describe('v8flags', function () {
@@ -53,14 +69,7 @@ describe('v8flags', function () {
   });
 
   it('should fall back to writing to a temp dir if user home can\'t be found', function (done) {
-    delete env.HOME;
-    delete env.USERPROFILE;
-    delete env.HOMEDRIVE;
-    delete env.HOMEPATH;
-    delete env.LOGNAME;
-    delete env.USER;
-    delete env.LNAME;
-    delete env.USERNAME;
+    eraseHome();
     var os = require('os');
     var v8flags = require('./');
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
@@ -71,19 +80,22 @@ describe('v8flags', function () {
   });
 
   it('should return flags even if an error is thrown', function (done) {
-    delete env.HOME;
-    delete env.USERPROFILE;
-    delete env.HOMEDRIVE;
-    delete env.HOMEPATH;
-    delete env.LOGNAME;
-    delete env.USER;
-    delete env.LNAME;
-    delete env.USERNAME;
-    env.TMPDIR = env.TEMP = env.TMP = '/nope';
+    eraseHome();
+    setTemp('/nope');
     var v8flags = require('./');
     v8flags(function (err, flags) {
       expect(err).to.not.be.null;
       expect(flags).to.not.be.undefined;
+      done();
+    });
+  });
+
+  it('should back with an empty array if the runtime is electron', function (done) {
+    process.versions.electron = 'set';
+    var v8flags = require('./');
+    v8flags(function (err, flags) {
+      expect(flags).to.have.length(0);
+      expect(flags).to.be.an.array;
       done();
     });
   });
