@@ -60,11 +60,16 @@ function getFlags (cb) {
     if (execErr) {
       return cb(execErr);
     }
-    var flags = result.match(/\s\s--(\w+)/gm).map(function (match) {
-      return match.substring(2);
-    }).filter(function (name) {
-      return exclusions.indexOf(name) === -1;
-    });
+    var flags = result.match(/\s\s--(\w+)/gm);
+    if (flags) {
+      flags = flags.map(function (match) {
+        return match.substring(2);
+      }).filter(function (name) {
+        return exclusions.indexOf(name) === -1;
+      });
+    } else {
+      flags = [];
+    }
     return cb(null, flags);
   });
 }
