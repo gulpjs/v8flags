@@ -86,8 +86,9 @@ function writeConfig (fd, flags, cb) {
 
 module.exports = function (cb) {
   // bail early if this is not node
-  var isElectron = process.versions && process.versions.electron;
-  if (isElectron) {
+  var isElectron = process.versions && process.versions.electron,
+    isJxcore = process.versions && process.versions.jxcore;
+  if (isElectron || isJxcore) {
     return process.nextTick(function () {
       cb(null, []);
     });
