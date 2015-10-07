@@ -8,13 +8,15 @@ const path = require('path');
 const execFile = require('child_process').execFile;
 const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME;
+const v8configpath = env.V8CONFIGPATH;
 const configfile = '.v8flags.'+process.versions.v8+'.'+user+'.json';
 const exclusions = ['--help'];
 
 const failureMessage = [
-  'Unable to cache a config file for v8flags to a your home directory',
-  'or a temporary folder. To fix this problem, please correct your',
-  'environment by setting HOME=/path/to/home or TEMP=/path/to/temp.',
+  'Unable to cache a config file for v8flags to a your v8 config path,',
+  'home directory or a temporary folder. To fix this problem, please',
+  'correct your environment by setting V8CONFIGPATH=/path/to/v8config,',
+  'HOME=/path/to/home or TEMP=/path/to/temp.',
   'NOTE: the user running this must be able to access provided path.',
   'If all else fails, please open an issue here:',
   'http://github.com/tkellen/js-v8flags'
@@ -27,7 +29,7 @@ function fail (err) {
 
 function openConfig (cb) {
   var userHome = require('user-home');
-  var configpath = path.join(userHome || os.tmpdir(), configfile);
+  var configpath = path.join(v8configpath || userHome || os.tmpdir(), configfile);
   var content;
   try {
     // if the config file is valid, it should be json and therefore
