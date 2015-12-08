@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 const async = require('async');
 const expect = require('chai').expect;
@@ -17,30 +18,31 @@ function eraseHome() {
   delete env.USERNAME;
 }
 
-function setTemp() {
-  env.TMPDIR = env.TEMP = env.TMP = '/nope';
+function setTemp(dir) {
+  env.TMPDIR = env.TEMP = env.TMP = dir;
 }
 
 function cleanup () {
-  delete require.cache[require.resolve('os')];
-  delete require.cache[require.resolve('user-home')];
-  var os = require('os')
   var v8flags = require('./');
-  try {
-    [
-      path.resolve(require('user-home'), v8flags.configfile),
-      path.resolve(os.tmpdir(), v8flags.configfile),
-      path.resolve('/tmp', v8flags.configfile)
-    ].map(fs.unlinkSync);
-  } catch (e) {}
-  delete require.cache[require.resolve('os')];
+  var userHome = require('user-home');
+  if (userHome === null) userHome = __dirname;
+
+  var files = [
+    path.resolve(userHome, v8flags.configfile),
+    path.resolve(os.tmpdir(), v8flags.configfile),
+  ];
+  files.forEach(function (file) {
+    try {
+      fs.unlinkSync(file);
+    } catch (e) {}
+  });
+
   delete require.cache[require.resolve('user-home')];
   delete process.versions.electron;
 }
 
 describe('v8flags', function () {
-
-  beforeEach(cleanup)
+  beforeEach(cleanup);
   afterEach(cleanup);
 
   it('should cache and call back with the v8 flags for the running process', function (done) {
@@ -70,7 +72,17 @@ describe('v8flags', function () {
 
   it('should fall back to writing to a temp dir if user home can\'t be found', function (done) {
     eraseHome();
-    var os = require('os');
+    var v8flags = require('./');
+    var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
+    v8flags(function (err, flags) {
+      expect(fs.existsSync(configfile)).to.be.true;
+      done();
+    });
+  });
+
+  it('should fall back to writing to a temp dir if user home is unwriteable', function (done) {
+    eraseHome();
+    env.HOME = path.join(__dirname, 'does-not-exist');
     var v8flags = require('./');
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function (err, flags) {
