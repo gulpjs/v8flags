@@ -11,7 +11,7 @@ const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME;
 const exclusions = ['--help'];
 
-const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('base64')+'.json';
+const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
 
 const failureMessage = [
   'Unable to cache a config file for v8flags to a your home directory',
