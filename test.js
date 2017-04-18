@@ -96,6 +96,7 @@ describe('v8flags', function () {
     setTemp('/nope');
     var v8flags = require('./');
     v8flags(function (err, flags) {
+      setTemp('/tmp');
       expect(err).to.not.be.null;
       expect(flags).to.not.be.undefined;
       done();
@@ -110,5 +111,17 @@ describe('v8flags', function () {
       expect(flags).to.be.an.array;
       done();
     });
+  });
+
+  it('should handle usernames which are invalid file paths', function(done) {
+    eraseHome();
+    env.USER = 'invalid/user\\name';
+    delete require.cache[require.resolve('./')];
+    var v8flags = require('./');
+    console.log(v8flags.configfile);
+    v8flags(function (err, flags) {
+      expect(err).to.be.null;
+      done();
+    })
   });
 });
