@@ -23,6 +23,7 @@ v8flags(function (err, results) {
 
 ## Release History
 
+* 2017-04-18 - v2.1.1 - default to an empty user
 * 2017-04-18 - v2.1.0 - hash username to support invalid path characters
 * 2017-03-31 - v2.0.12 - don't pollute global namespace
 * 2015-12-07 - v2.0.11 - cache to temp directory if home is present but unwritable
