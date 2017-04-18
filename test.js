@@ -122,6 +122,17 @@ describe('v8flags', function () {
     v8flags(function (err, flags) {
       expect(err).to.be.null;
       done();
+    });
+  });
+
+  it('should handle undefined usernames', function(done) {
+    eraseHome();
+    delete require.cache[require.resolve('./')];
+    var v8flags = require('./');
+    console.log(v8flags.configfile);
+    v8flags(function (err, flags) {
+      expect(err).to.be.null;
+      done();
     })
   });
 });
