@@ -10,8 +10,10 @@ const execFile = require('child_process').execFile;
 const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
 const exclusions = ['--help'];
+const envPaths = require('env-paths');
 
 const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
+const configPath = envPaths('js-v8flags', {'suffix': ''}).cache;
 
 const failureMessage = [
   'Unable to cache a config file for v8flags to a your home directory',
@@ -33,10 +35,12 @@ function openConfig (cb) {
     return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
   }
 
-  tryOpenConfig(path.join(userHome, configfile), function (err, fd) {
-    if (err) return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
-    return cb(null, fd);
-  });
+  fs.mkdir(configPath, function () {
+    tryOpenConfig(path.join(configPath, configfile), function (err, fd) {
+      if (err) return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
+      return cb(null, fd);
+    });
+  })
 }
 
 function tryOpenConfig (configpath, cb) {
@@ -131,3 +135,4 @@ module.exports = function (cb) {
 };
 
 module.exports.configfile = configfile;
+module.exports.configPath = configPath;
