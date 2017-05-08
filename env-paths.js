@@ -5,7 +5,7 @@ const homedir = os.homedir();
 const tmpdir = os.tmpdir();
 const env = process.env;
 
-const macos = name => {
+const macos = function (name) {
 	const library = path.join(homedir, 'Library');
 
 	return {
@@ -17,7 +17,7 @@ const macos = name => {
 	};
 };
 
-const windows = name => {
+const windows = function (name) {
 	const appData = env.LOCALAPPDATA || path.join(homedir, 'AppData', 'Local');
 
 	return {
@@ -31,7 +31,7 @@ const windows = name => {
 };
 
 // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-const linux = name => {
+const linux = function (name) {
 	const username = path.basename(homedir);
 
 	return {
@@ -44,7 +44,7 @@ const linux = name => {
 	};
 };
 
-module.exports = (name, opts) => {
+module.exports = function (name, opts) {
 	if (typeof name !== 'string') {
 		throw new TypeError(`Expected string, got ${typeof name}`);
 	}
