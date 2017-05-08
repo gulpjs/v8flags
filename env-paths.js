@@ -1,7 +1,7 @@
 const path = require('path');
 const os = require('os');
 
-const homedir = os.homedir();
+const homedir = require('user-home');
 const tmpdir = os.tmpdir();
 const env = process.env;
 
@@ -47,13 +47,6 @@ const linux = function (name) {
 module.exports = function (name, opts) {
 	if (typeof name !== 'string') {
 		throw new TypeError(`Expected string, got ${typeof name}`);
-	}
-
-	opts = Object.assign({suffix: 'nodejs'}, opts);
-
-	if (opts.suffix) {
-		// add suffix to prevent possible conflict with native apps
-		name += `-${opts.suffix}`;
 	}
 
 	if (process.platform === 'darwin') {
