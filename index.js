@@ -10,7 +10,7 @@ const execFile = require('child_process').execFile;
 const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
 const exclusions = ['--help'];
-const envPaths = require('env-paths');
+const envPaths = require('./env-paths.js');
 
 const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
 const configPath = envPaths('js-v8flags', {'suffix': ''}).cache;
