@@ -1,3 +1,5 @@
+// Taken from https://github.com/sindresorhus/env-paths/
+
 const path = require('path');
 const os = require('os');
 
