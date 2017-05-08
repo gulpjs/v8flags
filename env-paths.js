@@ -46,7 +46,7 @@ const linux = function (name) {
 	};
 };
 
-module.exports = function (name, opts) {
+module.exports = function (name) {
 	if (typeof name !== 'string') {
 		throw new TypeError('Expected string, got ' + typeof name);
 	}

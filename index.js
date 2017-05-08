@@ -13,7 +13,7 @@ const exclusions = ['--help'];
 const envPaths = require('./env-paths.js');
 
 const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
-const configPath = envPaths('js-v8flags', {'suffix': ''}).cache;
+const configPath = envPaths('js-v8flags').cache;
 
 const failureMessage = [
   'Unable to cache a config file for v8flags to a your home directory',
