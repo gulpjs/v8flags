@@ -16,6 +16,8 @@ function eraseHome() {
   delete env.USER;
   delete env.LNAME;
   delete env.USERNAME;
+  delete env.XDG_CACHE_HOME;
+  delete env.LOCALAPPDATA;
 }
 
 function setTemp(dir) {
@@ -140,3 +142,46 @@ describe('v8flags', function () {
     })
   });
 });
+
+describe('config-path', function () {
+  const moduleName = 'js-v8flags';
+
+  beforeEach(function() {
+    env.HOME = 'somehome';
+    cleanup();
+  });
+  afterEach(cleanup);
+
+  it('should return default linux path in other environments', function(done) {
+    Object.defineProperty(process, 'platform', {value: 'other'});
+    delete require.cache[require.resolve('./config-path.js')];
+    const configPath = require('./config-path.js');
+
+    expect(configPath).to.equal(
+      path.join(env.HOME, '.cache', moduleName)
+    );
+    done();
+  });
+
+  it('should return default macos path in darwin environment', function(done) {
+    Object.defineProperty(process, 'platform', {value: 'darwin'});
+    delete require.cache[require.resolve('./config-path.js')];
+    const configPath = require('./config-path.js');
+
+    expect(configPath).to.equal(
+      path.join(env.HOME, 'Library', 'Caches', moduleName)
+    );
+    done();
+  });
+
+  it('should return default windows path in win32 environment', function(done) {
+    Object.defineProperty(process, 'platform', {value: 'win32'});
+    delete require.cache[require.resolve('./config-path.js')];
+    const configPath = require('./config-path.js');
+
+    expect(configPath).to.equal(
+      path.join(env.HOME, 'AppData', 'Local', moduleName, 'Cache')
+    );
+    done();
+  });
+})
