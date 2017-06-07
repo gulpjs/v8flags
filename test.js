@@ -85,8 +85,8 @@ describe('v8flags', function () {
     eraseHome();
     env.HOME = path.join(__dirname, 'does-not-exist');
     // Clear require cached modules so the modified environment variable HOME is used
-    delete require.cache[require.resolve('./')]
-    delete require.cache[require.resolve('./config-path.js')]
+    delete require.cache[require.resolve('./')];
+    delete require.cache[require.resolve('./config-path.js')];
     var v8flags = require('./');
     v8flags.configPath = env.HOME;
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
@@ -138,7 +138,7 @@ describe('v8flags', function () {
     v8flags(function (err, flags) {
       expect(err).to.be.null;
       done();
-    })
+    });
   });
 });
 
