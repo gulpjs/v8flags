@@ -27,8 +27,6 @@ function setTemp(dir) {
 
 function cleanup () {
   var v8flags = require('./');
-  var userHome = require('user-home');
-  if (userHome === null) userHome = __dirname;
 
   var files = [
     path.resolve(v8flags.configPath, v8flags.configfile),
@@ -154,9 +152,8 @@ describe('config-path', function () {
   afterEach(cleanup);
 
   it('should return default linux path in other environments', function(done) {
-    process.platform = 'other';
     delete require.cache[require.resolve('./config-path.js')];
-    const configPath = require('./config-path.js');
+    const configPath = require('./config-path.js')('other');
 
     expect(configPath).to.equal(
       path.join(env.HOME, '.cache', moduleName)
@@ -165,9 +162,8 @@ describe('config-path', function () {
   });
 
   it('should return default macos path in darwin environment', function(done) {
-    process.platform = 'darwin';
     delete require.cache[require.resolve('./config-path.js')];
-    const configPath = require('./config-path.js');
+    const configPath = require('./config-path.js')('darwin');
 
     expect(configPath).to.equal(
       path.join(env.HOME, 'Library', 'Caches', moduleName)
@@ -176,13 +172,12 @@ describe('config-path', function () {
   });
 
   it('should return default windows path in win32 environment', function(done) {
-    process.platform = 'win32';
     delete require.cache[require.resolve('./config-path.js')];
-    const configPath = require('./config-path.js');
+    const configPath = require('./config-path.js')('win32');
 
     expect(configPath).to.equal(
       path.join(env.HOME, 'AppData', 'Local', moduleName, 'Cache')
     );
     done();
   });
-})
+});

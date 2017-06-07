@@ -20,10 +20,14 @@ function linux () {
 	return path.join(env.XDG_CACHE_HOME || path.join(userHome, '.cache'), name);
 }
 
-if (process.platform === 'darwin') {
-	module.exports = macos();
-} else if (process.platform === 'win32') {
-	module.exports = windows();
-} else {
-	module.exports = linux();
+module.exports = function (platform) {
+	if (platform === 'darwin') {
+		return macos();
+	}
+
+	if (platform === 'win32') {
+		return windows();
+	}
+
+	return linux();
 }
