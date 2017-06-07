@@ -18,7 +18,6 @@ function eraseHome() {
   delete env.USERNAME;
   delete env.XDG_CACHE_HOME;
   delete env.LOCALAPPDATA;
-  delete process.platform;
 }
 
 function setTemp(dir) {
