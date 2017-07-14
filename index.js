@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const execFile = require('child_process').execFile;
+const configPath = require('./config-path.js')(process.platform);
 const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
 const exclusions = ['--help'];
@@ -33,10 +34,12 @@ function openConfig (cb) {
     return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
   }
 
-  tryOpenConfig(path.join(userHome, configfile), function (err, fd) {
-    if (err) return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
-    return cb(null, fd);
-  });
+  fs.mkdir(configPath, function () {
+    tryOpenConfig(path.join(configPath, configfile), function (err, fd) {
+      if (err) return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
+      return cb(null, fd);
+    });
+  })
 }
 
 function tryOpenConfig (configpath, cb) {
@@ -131,3 +134,4 @@ module.exports = function (cb) {
 };
 
 module.exports.configfile = configfile;
+module.exports.configPath = configPath;
