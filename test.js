@@ -112,7 +112,7 @@ describe('v8flags', function () {
     var v8flags = require('./');
     v8flags(function (err, flags) {
       expect(flags).to.have.length(0);
-      expect(flags).to.be.an.array;
+      expect(flags).to.be.an('array');
       done();
     });
   });

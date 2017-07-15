@@ -21,7 +21,7 @@
     }
   ],
   "scripts": {
-    "test": "_mocha -R spec test.js"
+    "test": "mocha -R spec test.js"
   },
   "main": "index.js",
   "engines": {
@@ -32,9 +32,9 @@
     "harmony flags"
   ],
   "devDependencies": {
-    "async": "^0.9.0",
-    "chai": "~1.9.1",
-    "mocha": "~1.21.4"
+    "async": "^2.5.0",
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2"
   },
   "dependencies": {
     "user-home": "^1.1.1"
