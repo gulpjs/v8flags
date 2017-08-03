@@ -4,6 +4,8 @@ const os = require('os');
 
 const async = require('async');
 const expect = require('chai').expect;
+const proxyquire = require('proxyquire');
+const requireUncached = require('require-uncached');
 
 const env = process.env;
 
@@ -70,10 +72,18 @@ describe('v8flags', function () {
     });
   });
 
-  it.skip('should fall back to writing to a temp dir if user home can\'t be found', function (done) {
+  it('should fall back to writing to a temp dir if user home can\'t be found', function (done) {
     eraseHome();
-    var v8flags = require('./');
-    var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
+
+    delete require.cache[require.resolve('./config-path.js')];
+    proxyquire('./config-path.js', {
+      'homedir-polyfill': function () {
+        return null;
+      }
+    });
+
+    const v8flags = requireUncached('./');
+    const configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function (err, flags) {
       expect(fs.existsSync(configfile)).to.be.true;
       done();

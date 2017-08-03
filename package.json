@@ -34,7 +34,9 @@
   "devDependencies": {
     "async": "^2.5.0",
     "chai": "^4.1.0",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "proxyquire": "^1.8.0",
+    "require-uncached": "^1.0.3"
   },
   "dependencies": {
     "homedir-polyfill": "^1.0.1"
