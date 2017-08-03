@@ -29,11 +29,6 @@ function fail (err) {
 }
 
 function openConfig (cb) {
-  var userHome = require('user-home');
-  if (!userHome) {
-    return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
-  }
-
   fs.mkdir(configPath, function () {
     tryOpenConfig(path.join(configPath, configfile), function (err, fd) {
       if (err) return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
