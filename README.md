@@ -1,3 +1,4 @@
+appveyor
 # v8flags [![Build Status](https://secure.travis-ci.org/js-cli/js-v8flags.png)](http://travis-ci.org/js-cli/js-v8flags) [![Build status](https://ci.appveyor.com/api/projects/status/9psgmwayx9kpol1a?svg=true)](https://ci.appveyor.com/project/js-cli/js-v8flags)
 > Get available v8 flags.
 
