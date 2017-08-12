@@ -25,7 +25,7 @@ module.exports = function (platform) {
   if (!userHome) {
     return os.tmpdir();
   }
-  
+
   if (platform === 'darwin') {
     return macos();
   }

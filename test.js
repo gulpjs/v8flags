@@ -5,7 +5,6 @@ const os = require('os');
 const async = require('async');
 const expect = require('chai').expect;
 const proxyquire = require('proxyquire');
-const requireUncached = require('require-uncached');
 
 const env = process.env;
 
@@ -39,6 +38,9 @@ function cleanup () {
     } catch (e) {}
   });
 
+  delete require.cache[require.resolve('./')];
+  delete require.cache[require.resolve('./config-path')];
+
   delete process.versions.electron;
 }
 
@@ -71,28 +73,10 @@ describe('v8flags', function () {
     });
   });
 
-  it('should fall back to writing to a temp dir if user home can\'t be found', function (done) {
-    eraseHome();
-
-    delete require.cache[require.resolve('./config-path.js')];
-    proxyquire('./config-path.js', {
-      'homedir-polyfill': function () {
-        return null;
-      }
-    });
-
-    const v8flags = requireUncached('./');
-    const configfile = path.resolve(os.tmpdir(), v8flags.configfile);
-    v8flags(function (err, flags) {
-      expect(fs.existsSync(configfile)).to.be.true;
-      done();
-    });
-  });
-
   it('should fall back to writing to a temp dir if user home is unwriteable', function (done) {
     eraseHome();
     env.HOME = path.join(__dirname, 'does-not-exist');
-    const v8flags = requireUncached('./');
+    const v8flags = require('./');
     v8flags.configPath = env.HOME;
     const configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function (err, flags) {
@@ -104,9 +88,10 @@ describe('v8flags', function () {
   it('should return flags even if an error is thrown', function (done) {
     eraseHome();
     setTemp('/nope');
-    const v8flags = requireUncached('./');
+    env.HOME = '/';
+    const v8flags = require('./');
     v8flags(function (err, flags) {
-      setTemp('/tmp');
+      setTemp(os.tmpdir());
       expect(err).to.not.be.null;
       expect(flags).to.not.be.undefined;
       done();
@@ -126,7 +111,7 @@ describe('v8flags', function () {
   it('should handle usernames which are invalid file paths', function(done) {
     eraseHome();
     env.USER = 'invalid/user\\name';
-    const v8flags = requireUncached('./');
+    const v8flags = require('./');
     v8flags(function (err, flags) {
       expect(err).to.be.null;
       done();
@@ -135,7 +120,7 @@ describe('v8flags', function () {
 
   it('should handle undefined usernames', function(done) {
     eraseHome();
-    const v8flags = requireUncached('./');
+    const v8flags = require('./');
     v8flags(function (err, flags) {
       expect(err).to.be.null;
       done();
@@ -153,7 +138,7 @@ describe('config-path', function () {
   after(cleanup);
 
   it('should return default linux path in other environments', function (done) {
-    const configPath = requireUncached('./config-path.js')('other');
+    const configPath = require('./config-path.js')('other');
 
     expect(configPath).to.equal(
       path.join(env.HOME, '.cache', moduleName)
@@ -162,7 +147,7 @@ describe('config-path', function () {
   });
 
   it('should return default macos path in darwin environment', function (done) {
-    const configPath = requireUncached('./config-path.js')('darwin');
+    const configPath = require('./config-path.js')('darwin');
 
     expect(configPath).to.equal(
       path.join(env.HOME, 'Library', 'Caches', moduleName)
@@ -171,10 +156,23 @@ describe('config-path', function () {
   });
 
   it('should return default windows path in win32 environment', function (done) {
-    const configPath = requireUncached('./config-path.js')('win32');
+    const configPath = require('./config-path.js')('win32');
 
     expect(configPath).to.equal(
       path.join(env.HOME, 'AppData', 'Local', moduleName, 'Cache')
+    );
+    done();
+  });
+
+  it('should return fallback path when no home is found', function (done) {
+    const configPath = proxyquire('./config-path.js', {
+      'homedir-polyfill': function () {
+        return null;
+      }
+    })('win32');
+
+    expect(configPath).to.equal(
+      os.tmpdir()
     );
     done();
   });
