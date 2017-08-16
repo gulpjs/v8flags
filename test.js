@@ -21,8 +21,17 @@ function eraseHome () {
   delete env.LOCALAPPDATA;
 }
 
+var tmpdir = env.TMPDIR;
+var temp = env.TEMP;
+var tmp = env.TMP;
+
 function setTemp (dir) {
   env.TMPDIR = env.TEMP = env.TMP = dir;
+}
+function resetTemp() {
+  env.TMPDIR = tmpdir;
+  env.TEMP = temp;
+  env.TMP = tmp;
 }
 
 function cleanup () {
@@ -75,9 +84,8 @@ describe('v8flags', function () {
 
   it('should fall back to writing to a temp dir if user home is unwriteable', function (done) {
     eraseHome();
-    env.HOME = path.join(__dirname, 'does-not-exist');
+    env.HOME = env.LOCALAPPDATA = path.join(__dirname, 'does-not-exist');
     const v8flags = require('./');
-    v8flags.configPath = env.HOME;
     const configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function (err, flags) {
       expect(fs.existsSync(configfile)).to.be.true;
@@ -88,10 +96,10 @@ describe('v8flags', function () {
   it('should return flags even if an error is thrown', function (done) {
     eraseHome();
     setTemp('/nope');
-    env.HOME = '/';
+    env.HOME = env.LOCALAPPDATA = null;
     const v8flags = require('./');
     v8flags(function (err, flags) {
-      setTemp(os.tmpdir());
+      resetTemp();
       expect(err).to.not.be.null;
       expect(flags).to.not.be.undefined;
       done();
@@ -132,7 +140,7 @@ describe('config-path', function () {
   const moduleName = 'js-v8flags';
 
   before(function () {
-    env.HOME = 'somehome';
+    env.HOME = env.USERPROFILE = 'somehome';
   });
 
   after(cleanup);
@@ -159,7 +167,7 @@ describe('config-path', function () {
     const configPath = require('./config-path.js')('win32');
 
     expect(configPath).to.equal(
-      path.join(env.HOME, 'AppData', 'Local', moduleName, 'Cache')
+      path.join(env.HOME, 'AppData', 'Local', moduleName)
     );
     done();
   });
