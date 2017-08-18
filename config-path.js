@@ -12,7 +12,7 @@ function macos () {
 
 function windows () {
   const appData = env.LOCALAPPDATA || path.join(userHome, 'AppData', 'Local');
-  return path.join(appData, name, 'Cache');
+  return path.join(appData, name);
 }
 
 // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
