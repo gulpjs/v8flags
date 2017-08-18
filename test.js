@@ -21,13 +21,14 @@ function eraseHome () {
   delete env.LOCALAPPDATA;
 }
 
-var tmpdir = env.TMPDIR;
-var temp = env.TEMP;
-var tmp = env.TMP;
+const tmpdir = env.TMPDIR;
+const temp = env.TEMP;
+const tmp = env.TMP;
 
 function setTemp (dir) {
   env.TMPDIR = env.TEMP = env.TMP = dir;
 }
+
 function resetTemp() {
   env.TMPDIR = tmpdir;
   env.TEMP = temp;
