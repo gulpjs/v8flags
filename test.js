@@ -50,6 +50,7 @@ function cleanup () {
 
   delete require.cache[require.resolve('./')];
   delete require.cache[require.resolve('./config-path')];
+  delete require.cache[require.resolve('homedir-polyfill')];
 
   delete process.versions.electron;
 }
@@ -173,16 +174,31 @@ describe('config-path', function () {
     done();
   });
 
-  it('should return fallback path when no home is found', function (done) {
+  it('should return fallback path when homedir is falsy', function (done) {
     const configPath = proxyquire('./config-path.js', {
       'homedir-polyfill': function () {
         return null;
       }
     })('win32');
 
-    expect(configPath).to.equal(
-      os.tmpdir()
-    );
+    expect(configPath).to.equal(os.tmpdir());
+    done();
+  });
+});
+
+describe('platform specific tests', function () {
+  before(cleanup);
+
+  it('should return fallback path when no home is found under windows', function (done) {
+    if (os.platform() !== 'win32' || !process.version.match(/0\.10|0\.12/)) {
+      this.skip();
+    }
+
+    eraseHome();
+    console.log(process.env.HOME, process.env.USERPROFILE, process.env.HOMEDRIVE, process.env.HOMEPATH);
+    const configPath = require('./config-path.js')('win32');
+
+    expect(configPath).to.equal(os.tmpdir());
     done();
   });
 });
