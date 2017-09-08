@@ -195,7 +195,6 @@ describe('platform specific tests', function () {
     }
 
     eraseHome();
-    console.log(process.env.HOME, process.env.USERPROFILE, process.env.HOMEDRIVE, process.env.HOMEPATH);
     const configPath = require('./config-path.js')('win32');
 
     expect(configPath).to.equal(os.tmpdir());
