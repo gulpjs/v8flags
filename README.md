@@ -23,6 +23,7 @@ v8flags(function (err, results) {
 
 ## Release History
 
+* 2017-09-24 - v3.0.1 - Fix home directory lookup behavior & fallback
 * 2017-07-14 - v3.0.0 - store cached config to operating system specific directories
 * 2017-04-18 - v2.1.1 - default to an empty user
 * 2017-04-18 - v2.1.0 - hash username to support invalid path characters
