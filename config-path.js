@@ -1,5 +1,6 @@
+const os = require('os');
 const path = require('path');
-const userHome = require('user-home');
+const userHome = require('homedir-polyfill')();
 
 const env = process.env;
 const name = 'js-v8flags';
@@ -11,7 +12,7 @@ function macos () {
 
 function windows () {
   const appData = env.LOCALAPPDATA || path.join(userHome, 'AppData', 'Local');
-  return path.join(appData, name, 'Cache');
+  return path.join(appData, name);
 }
 
 // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
@@ -21,6 +22,10 @@ function linux () {
 }
 
 module.exports = function (platform) {
+  if (!userHome) {
+    return os.tmpdir();
+  }
+
   if (platform === 'darwin') {
     return macos();
   }
