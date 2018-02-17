@@ -15,7 +15,7 @@ const exclusions = ['--help'];
 const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
 
 const failureMessage = [
-  'Unable to cache a config file for v8flags to a your home directory',
+  'Unable to cache a config file for v8flags to your home directory',
   'or a temporary folder. To fix this problem, please correct your',
   'environment by setting HOME=/path/to/home or TEMP=/path/to/temp.',
   'NOTE: the user running this must be able to access provided path.',
