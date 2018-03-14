@@ -26,6 +26,11 @@ module.exports = function (platform) {
     return os.tmpdir();
   }
 
+  // Non-linux users can also set this environment variable.
+  if (env.XDG_CACHE_HOME) {
+    return linux();
+  }
+
   if (platform === 'darwin') {
     return macos();
   }
