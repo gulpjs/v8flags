@@ -174,6 +174,22 @@ describe('config-path', function () {
     done();
   });
 
+  it('should return the specified path if XDG_CACHE_HOME is set', function (done) {
+    const cachePath = path.join(env.HOME, '.local', 'cache');
+    process.env.XDG_CACHE_HOME = cachePath;
+
+    const configPath = require('./config-path.js')('any');
+
+    expect(configPath).to.equal(
+      path.join(cachePath, moduleName)
+    );
+
+    delete process.env.XDG_CACHE_HOME;
+
+    done();
+  });
+
+
   it('should return fallback path when homedir is falsy', function (done) {
     const configPath = proxyquire('./config-path.js', {
       'homedir-polyfill': function () {
