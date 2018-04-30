@@ -108,6 +108,18 @@ describe('v8flags', function () {
     });
   });
 
+  it('should return unique flags', function (done) {
+    const v8flags = require('./');
+    v8flags(function (err, foundFlags) {
+      const uniqueFlags = foundFlags.reduce(function (res, val) {
+        res[val] = true;
+        return res;
+      }, {});
+      expect(Object.keys(uniqueFlags)).to.have.lengthOf(foundFlags.length);
+      done();
+    });
+  });
+
   it('should back with an empty array if the runtime is electron', function (done) {
     process.versions.electron = 'set';
     const v8flags = require('./');

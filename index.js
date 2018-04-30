@@ -69,7 +69,7 @@ function getFlags (cb) {
     if (execErr) {
       return cb(execErr);
     }
-    var flags = result.match(/\s\s--(\w+)/gm).map(function (match) {
+    var flags = result.match(/\s\s--(\w|-)+/gm).map(function (match) {
       return match.substring(2);
     }).filter(function (name) {
       return exclusions.indexOf(name) === -1;
