@@ -129,7 +129,7 @@ describe('v8flags', function () {
   });
 
   it('should handle option names with multiple words', function(done) {
-    if (parseInt(process.versions.node) < 4) return;
+    if (parseInt(process.versions.node) < 4) return done();
 
     eraseHome();
     const v8flags = require('./');
