@@ -132,6 +132,15 @@ describe('v8flags', function () {
     eraseHome();
     const v8flags = require('./');
     v8flags(function (err, flags) {
+      expect(flags).to.include("--expose_gc_as");
+      done();
+    });
+  });
+
+  it('should handle option names with multiple words', function(done) {
+    eraseHome();
+    const v8flags = require('./');
+    v8flags(function (err, flags) {
       expect(err).to.be.null;
       done();
     });
