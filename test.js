@@ -128,7 +128,9 @@ describe('v8flags', function () {
     });
   });
 
-  it('should handle undefined usernames', function(done) {
+  it('should handle option names with multiple words', function(done) {
+    if (parseInt(process.versions.node) < 4) return;
+
     eraseHome();
     const v8flags = require('./');
     v8flags(function (err, flags) {
@@ -137,7 +139,7 @@ describe('v8flags', function () {
     });
   });
 
-  it('should handle option names with multiple words', function(done) {
+  it('should handle undefined usernames', function(done) {
     eraseHome();
     const v8flags = require('./');
     v8flags(function (err, flags) {
