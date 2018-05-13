@@ -8,11 +8,12 @@ const path = require('path');
 const crypto = require('crypto');
 const execFile = require('child_process').execFile;
 const configPath = require('./config-path.js')(process.platform);
+const version = require("./package.json").version;
 const env = process.env;
 const user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
 const exclusions = ['--help'];
 
-const configfile = '.v8flags.'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
+const configfile = '.v8flags-'+version+'-'+process.versions.v8+'.'+crypto.createHash('md5').update(user).digest('hex')+'.json';
 
 const failureMessage = [
   'Unable to cache a config file for v8flags to your home directory',
