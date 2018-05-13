@@ -60,6 +60,14 @@ function tryOpenConfig (configpath, cb) {
   }
 }
 
+// Node <= 9 outputs _ in flags with multiple words, while node 10
+// uses -. Both ways are accepted anyway, so always use `_` for better
+// compatibility.
+// We must not replace the first two --.
+function normalizeFlagName(flag) {
+  return "--" + flag.slice(4).replace(/-/g, "_");
+}
+
 // i can't wait for the day this whole module is obsolete because these
 // options are available on the process object. this executes node with
 // `--v8-options` and parses the result, returning an array of command
@@ -69,11 +77,11 @@ function getFlags (cb) {
     if (execErr) {
       return cb(execErr);
     }
-    var flags = result.match(/\s\s--(\w+)/gm).map(function (match) {
-      return match.substring(2);
-    }).filter(function (name) {
-      return exclusions.indexOf(name) === -1;
-    });
+    var flags = result.match(/\s\s--[\w-]+/gm)
+      .map(normalizeFlagName)
+      .filter(function (name) {
+        return exclusions.indexOf(name) === -1;
+      });
     return cb(null, flags);
   });
 }
