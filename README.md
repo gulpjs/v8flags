@@ -23,6 +23,7 @@ v8flags(function (err, results) {
 
 ## Release History
 
+* 2018-05-13 - v3.1.0 - Add support for node 10
 * 2018-02-26 - v3.0.2 - fix typo in the failure message
 * 2017-09-24 - v3.0.1 - fix home directory lookup behavior & fallback
 * 2017-07-14 - v3.0.0 - store cached config to operating system specific directories
