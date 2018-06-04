@@ -1,7 +1,7 @@
 {
   "name": "v8flags",
   "description": "Get available v8 flags.",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "homepage": "https://github.com/tkellen/node-v8flags",
   "author": {
     "name": "Tyler Kellen",
