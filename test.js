@@ -74,13 +74,6 @@ describe('v8flags', function () {
     });
   });
 
-  it('should cache based on the package version', function (done) {
-    const v8flags = require('./');
-    const version = require('./package.json').version;
-    expect(v8flags.configfile).to.contain(version);
-    done();
-  })
-
   it('should not append the file when multiple calls happen concurrently and the config file does not yet exist', function (done) {
     const v8flags = require('./');
     const configfile = path.resolve(v8flags.configPath, v8flags.configfile);
