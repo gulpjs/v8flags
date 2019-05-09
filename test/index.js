@@ -110,6 +110,28 @@ describe('v8flags', function() {
     });
   });
 
+  it('will not throw on non-matching return from node --v8-options', function(done) {
+    if (os.platform() === 'win32') {
+      this.skip();
+    }
+
+    eraseHome();
+    var v8flags = require('../');
+
+    // Save original execPath
+    var execPath = process.execPath;
+    // Set execPath to our fake-bin
+    process.execPath = __dirname + '/fake-bin';
+
+    v8flags(function(err, flags) {
+      expect(err).toNotExist();
+      expect(flags).toEqual([]);
+      // Restore original execPath
+      process.execPath = execPath;
+      done();
+    });
+  });
+
   it('should back with an empty array if the runtime is electron', function(done) {
     process.versions.electron = 'set';
     var v8flags = require('../');

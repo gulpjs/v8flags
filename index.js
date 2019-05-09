@@ -83,7 +83,10 @@ function getFlags(cb) {
     if (execErr) {
       return cb(execErr);
     }
-    var flags = result.match(/\s\s--[\w-]+/gm)
+    // If the binary doesn't return flags in the way we expect, default to an empty array
+    // Reference https://github.com/gulpjs/v8flags/issues/53
+    var matchedFlags = result.match(/\s\s--[\w-]+/gm) || [];
+    var flags = matchedFlags
       .map(normalizeFlagName)
       .filter(function(name) {
         return exclusions.indexOf(name) === -1;
