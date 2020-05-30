@@ -173,6 +173,15 @@ describe('v8flags', function() {
       done();
     });
   });
+
+  it('should detect non-v8 flags', function(done) {
+    eraseHome();
+    var v8flags = require('../');
+    v8flags(function(err, flags) {
+      expect(flags).toInclude('--no_deprecation');
+      done();
+    });
+  });
 });
 
 describe('config-path', function() {
