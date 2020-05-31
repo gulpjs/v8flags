@@ -182,6 +182,19 @@ describe('v8flags', function() {
       done();
     });
   });
+
+  it('does not detect colliding flags from node', function(done) {
+    eraseHome();
+    var v8flags = require('../');
+    v8flags(function(err, flags) {
+      expect(flags).toNotInclude('--exec');
+      expect(flags).toNotInclude('--print');
+      expect(flags).toNotInclude('--interactive');
+      expect(flags).toNotInclude('--require');
+      expect(flags).toNotInclude('--version');
+      done();
+    });
+  });
 });
 
 describe('config-path', function() {
