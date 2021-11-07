@@ -8,7 +8,6 @@ var path = require('path');
 var crypto = require('crypto');
 var execFile = require('child_process').execFile;
 var configPath = require('./config-path.js')(process.platform);
-var version = require('./package.json').version;
 var env = process.env;
 var user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
 var exclusions = ['--help', '--completion_bash'];
