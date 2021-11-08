@@ -26,9 +26,7 @@
     "pretest": "npm run lint",
     "test": "nyc mocha --async-only"
   },
-  "dependencies": {
-    "homedir-polyfill": "^1.0.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "async": "^3.2.2",
     "eslint": "^7.32.0",
