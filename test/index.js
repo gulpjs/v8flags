@@ -166,7 +166,7 @@ describe('v8flags', function () {
     eraseHome();
     var v8flags = require('../');
     v8flags(function (err, flags) {
-      expect(flags).toContain('--expose_gc_as');
+      expect(flags).toContain('--expose-gc-as');
       done();
     });
   });
@@ -197,6 +197,9 @@ describe('v8flags', function () {
       expect(flags).not.toContain('--print');
       expect(flags).not.toContain('--interactive');
       expect(flags).not.toContain('--version');
+      // Exclusions
+      expect(flags).not.toContain('--completion-bash');
+      expect(flags).not.toContain('--help');
       done();
     });
   });
