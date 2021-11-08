@@ -10,7 +10,7 @@ var execFile = require('child_process').execFile;
 var configPath = require('./config-path.js')(process.platform);
 var env = process.env;
 var user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
-var exclusions = ['--help', '--completion_bash'];
+var exclusions = ['--help', '--completion-bash'];
 
 // This number must be incremented whenever the generated cache file changes.
 var CACHE_VERSION = 3;
@@ -72,12 +72,8 @@ function tryOpenConfig(configpath, cb) {
   }
 }
 
-// Node <= 9 outputs _ in flags with multiple words, while node 10
-// uses -. Both ways are accepted anyway, so always use `_` for better
-// compatibility.
-// We must not replace the first two --.
 function normalizeFlagName(flag) {
-  return '--' + flag.slice(4).replace(/-/g, '_');
+  return flag.trim();
 }
 
 // i can't wait for the day this whole module is obsolete because these
@@ -115,19 +111,7 @@ function getFlags(cb) {
 // with both the error and the data that was meant to be written.
 function writeConfig(fd, flags, cb) {
   var json = JSON.stringify(flags);
-  var buf;
-  if (Buffer.from && Buffer.from !== Uint8Array.from) {
-    // Node.js 4.5.0 or newer
-    buf = Buffer.from(json);
-  } else {
-    // Old Node.js versions
-    // The typeof safeguard below is mostly against accidental copy-pasting
-    // and code rewrite, it never happens as json is always a string here.
-    if (typeof json === 'number') {
-      throw new Error('Unexpected type number');
-    }
-    buf = new Buffer(json);
-  }
+  var buf = Buffer.from(json);
   return fs.write(fd, buf, 0, buf.length, 0, function (writeErr) {
     fs.close(fd, function (closeErr) {
       var err = writeErr || closeErr;
