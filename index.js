@@ -115,19 +115,7 @@ function getFlags(cb) {
 // with both the error and the data that was meant to be written.
 function writeConfig(fd, flags, cb) {
   var json = JSON.stringify(flags);
-  var buf;
-  if (Buffer.from && Buffer.from !== Uint8Array.from) {
-    // Node.js 4.5.0 or newer
-    buf = Buffer.from(json);
-  } else {
-    // Old Node.js versions
-    // The typeof safeguard below is mostly against accidental copy-pasting
-    // and code rewrite, it never happens as json is always a string here.
-    if (typeof json === 'number') {
-      throw new Error('Unexpected type number');
-    }
-    buf = new Buffer(json);
-  }
+  var buf = Buffer.from(json);
   return fs.write(fd, buf, 0, buf.length, 0, function (writeErr) {
     fs.close(fd, function (closeErr) {
       var err = writeErr || closeErr;
