@@ -20,7 +20,7 @@ function linux() {
   return path.join(env.XDG_CACHE_HOME || path.join(userHome, '.cache'), name);
 }
 
-module.exports = function(platform) {
+module.exports = function (platform) {
   if (!userHome) {
     return os.tmpdir();
   }

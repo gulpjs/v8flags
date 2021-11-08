@@ -11,10 +11,11 @@
 Get available v8 and Node.js flags.
 
 ## Usage
+
 ```js
 const v8flags = require('v8flags');
 
-v8flags(function(err, results) {
+v8flags(function (err, results) {
   console.log(results);
   // [ '--use_strict',
   //   '--es5_readonly',
