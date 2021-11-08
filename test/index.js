@@ -8,6 +8,13 @@ var proxyquire = require('proxyquire');
 
 var env = process.env;
 
+function makeHomeCacheDir() {
+  var homeCacheDir = path.join(os.homedir(), '.cache');
+  if (!fs.existsSync(homeCacheDir)) {
+    fs.mkdirSync(homeCacheDir);
+  }
+}
+
 function eraseHome() {
   delete env.HOME;
   delete env.USERPROFILE;
@@ -58,6 +65,7 @@ function cleanup() {
 }
 
 describe('v8flags', function() {
+  before(makeHomeCacheDir);
   beforeEach(cleanup);
   afterEach(cleanup);
 
@@ -65,7 +73,7 @@ describe('v8flags', function() {
     var v8flags = require('../');
     var configfile = path.resolve(v8flags.configPath, v8flags.configfile);
     v8flags(function(err, flags) {
-      expect(flags).toBeAn('array');
+      expect(Array.isArray(flags)).toEqual(true);
       expect(fs.existsSync(configfile)).toEqual(true);
       fs.unlinkSync(configfile);
       fs.writeFileSync(configfile, JSON.stringify({ cached: true }));
@@ -78,9 +86,8 @@ describe('v8flags', function() {
 
   it('should not append the file when multiple calls happen concurrently and the config file does not yet exist', function(done) {
     var v8flags = require('../');
-    var configfile = path.resolve(v8flags.configPath, v8flags.configfile);
-    async.parallel([v8flags, v8flags, v8flags], function(err, result) {
-      v8flags(function(err2, res) {
+    async.parallel([v8flags, v8flags, v8flags], function() {
+      v8flags(function() {
         done();
       });
     });
@@ -91,7 +98,7 @@ describe('v8flags', function() {
     env.HOME = env.LOCALAPPDATA = path.join(__dirname, 'does-not-exist');
     var v8flags = require('../');
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
-    v8flags(function(err, flags) {
+    v8flags(function() {
       expect(fs.existsSync(configfile)).toEqual(true);
       done();
     });
@@ -104,8 +111,8 @@ describe('v8flags', function() {
     var v8flags = require('../');
     v8flags(function(err, flags) {
       resetTemp();
-      expect(err).toNotBe(null);
-      expect(flags).toNotBe(undefined);
+      expect(err).not.toBeNull();
+      expect(flags).not.toBeUndefined();
       done();
     });
   });
@@ -124,7 +131,7 @@ describe('v8flags', function() {
     process.execPath = __dirname + '/fake-bin';
 
     v8flags(function(err, flags) {
-      expect(err).toNotExist();
+      expect(err).toBeNull();
       expect(flags).toEqual([]);
       // Restore original execPath
       process.execPath = execPath;
@@ -137,7 +144,7 @@ describe('v8flags', function() {
     var v8flags = require('../');
     v8flags(function(err, flags) {
       expect(flags.length).toEqual(0);
-      expect(flags).toBeAn('array');
+      expect(Array.isArray(flags)).toEqual(true);
       done();
     });
   });
@@ -146,7 +153,7 @@ describe('v8flags', function() {
     eraseHome();
     env.USER = 'invalid/user\\name';
     var v8flags = require('../');
-    v8flags(function(err, flags) {
+    v8flags(function(err) {
       expect(err).toBe(null);
       done();
     });
@@ -160,7 +167,7 @@ describe('v8flags', function() {
     eraseHome();
     var v8flags = require('../');
     v8flags(function(err, flags) {
-      expect(flags).toInclude('--expose_gc_as');
+      expect(flags).toContain('--expose_gc_as');
       done();
     });
   });
@@ -168,7 +175,7 @@ describe('v8flags', function() {
   it('should handle undefined usernames', function(done) {
     eraseHome();
     var v8flags = require('../');
-    v8flags(function(err, flags) {
+    v8flags(function(err) {
       expect(err).toBe(null);
       done();
     });
@@ -178,7 +185,7 @@ describe('v8flags', function() {
     eraseHome();
     var v8flags = require('../');
     v8flags(function(err, flags) {
-      expect(flags).toInclude('--no_deprecation');
+      expect(flags).toContain('--no_deprecation');
       done();
     });
   });
@@ -187,11 +194,11 @@ describe('v8flags', function() {
     eraseHome();
     var v8flags = require('../');
     v8flags(function(err, flags) {
-      expect(flags).toNotInclude('--exec');
-      expect(flags).toNotInclude('--print');
-      expect(flags).toNotInclude('--interactive');
-      expect(flags).toNotInclude('--require');
-      expect(flags).toNotInclude('--version');
+      expect(flags).not.toContain('--exec');
+      expect(flags).not.toContain('--print');
+      expect(flags).not.toContain('--interactive');
+      expect(flags).not.toContain('--require');
+      expect(flags).not.toContain('--version');
       done();
     });
   });
