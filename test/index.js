@@ -239,10 +239,10 @@ describe('config-path', function () {
 
   it('should return fallback path when homedir is falsy', function (done) {
     var configPath = proxyquire('../config-path.js', {
-      'os': {
+      os: {
         homedir: function () {
           return null;
-        }
+        },
       },
     })('win32');
 
