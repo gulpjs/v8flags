@@ -1,6 +1,6 @@
 var os = require('os');
 var path = require('path');
-var userHome = require('homedir-polyfill')();
+var userHome = os.homedir();
 
 var env = process.env;
 var name = 'js-v8flags';

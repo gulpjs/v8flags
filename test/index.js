@@ -59,7 +59,6 @@ function cleanup() {
 
   delete require.cache[require.resolve('../')];
   delete require.cache[require.resolve('../config-path')];
-  delete require.cache[require.resolve('homedir-polyfill')];
 
   delete process.versions.electron;
 }
@@ -240,8 +239,10 @@ describe('config-path', function () {
 
   it('should return fallback path when homedir is falsy', function (done) {
     var configPath = proxyquire('../config-path.js', {
-      'homedir-polyfill': function () {
-        return null;
+      'os': {
+        homedir: function () {
+          return null;
+        }
       },
     })('win32');
 
