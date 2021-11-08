@@ -85,43 +85,30 @@ function normalizeFlagName(flag) {
 // `--v8-options` and parses the result, returning an array of command
 // line flags.
 function getFlags(cb) {
-  var errored = false;
-  var pending = 0;
-  var flags = [];
+  var flags = Array.from(process.allowedNodeEnvironmentFlags);
 
-  runNode('--help');
-  runNode('--v8-options');
+  execFile(process.execPath, ['--v8-options'], function (execErr, result) {
+    if (execErr) {
+      cb(execErr);
+      return;
+    }
 
-  function runNode(option) {
-    pending++;
-    execFile(process.execPath, [option], function (execErr, result) {
-      if (execErr || errored) {
-        if (!errored) {
-          errored = true;
-          cb(execErr);
-        }
-        return;
+    var index = result.indexOf('\nOptions:');
+    if (index >= 0) {
+      var regexp = /^\s\s--[\w-]+/gm;
+      regexp.lastIndex = index;
+      var matchedFlags = result.match(regexp);
+      if (matchedFlags) {
+        flags = flags.concat(
+          matchedFlags.map(normalizeFlagName).filter(function (name) {
+            return exclusions.indexOf(name) === -1;
+          })
+        );
       }
+    }
 
-      var index = result.indexOf('\nOptions:');
-      if (index >= 0) {
-        var regexp = /^\s\s--[\w-]+/gm;
-        regexp.lastIndex = index;
-        var matchedFlags = result.match(regexp);
-        if (matchedFlags) {
-          flags = flags.concat(
-            matchedFlags.map(normalizeFlagName).filter(function (name) {
-              return exclusions.indexOf(name) === -1;
-            })
-          );
-        }
-      }
-
-      if (--pending === 0) {
-        cb(null, flags);
-      }
-    });
-  }
+    cb(null, flags);
+  });
 }
 
 // write some json to a file descriptor. if this fails, call back

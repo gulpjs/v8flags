@@ -117,7 +117,7 @@ describe('v8flags', function () {
     });
   });
 
-  it('will not throw on non-matching return from node --v8-options', function (done) {
+  it('always has node flags, even when non-matching return from node --v8-options', function (done) {
     if (os.platform() === 'win32') {
       this.skip();
     }
@@ -132,7 +132,7 @@ describe('v8flags', function () {
 
     v8flags(function (err, flags) {
       expect(err).toBeNull();
-      expect(flags).toEqual([]);
+      expect(flags).toEqual(Array.from(process.allowedNodeEnvironmentFlags));
       // Restore original execPath
       process.execPath = execPath;
       done();
@@ -185,7 +185,7 @@ describe('v8flags', function () {
     eraseHome();
     var v8flags = require('../');
     v8flags(function (err, flags) {
-      expect(flags).toContain('--no_deprecation');
+      expect(flags).toContain('--no-deprecation');
       done();
     });
   });
@@ -197,7 +197,6 @@ describe('v8flags', function () {
       expect(flags).not.toContain('--exec');
       expect(flags).not.toContain('--print');
       expect(flags).not.toContain('--interactive');
-      expect(flags).not.toContain('--require');
       expect(flags).not.toContain('--version');
       done();
     });
