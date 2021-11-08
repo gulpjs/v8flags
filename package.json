@@ -1,6 +1,6 @@
 {
   "name": "v8flags",
-  "version": "3.2.0",
+  "version": "4.0.0",
   "description": "Get available v8 and Node.js flags.",
   "author": "Gulp Team <team@gulpjs.com> (https://gulpjs.com/)",
   "contributors": [
