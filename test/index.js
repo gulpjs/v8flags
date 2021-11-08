@@ -138,6 +138,28 @@ describe('v8flags', function () {
     });
   });
 
+  it('fails with an error if the CLI crashes', function (done) {
+    if (os.platform() === 'win32') {
+      this.skip();
+    }
+
+    eraseHome();
+    var v8flags = require('../');
+
+    // Save original execPath
+    var execPath = process.execPath;
+    // Set execPath to our fake-bin
+    process.execPath = __dirname + '/throw-bin';
+
+    v8flags(function (err, flags) {
+      expect(err).not.toBeNull();
+      expect(flags).toBeUndefined();
+      // Restore original execPath
+      process.execPath = execPath;
+      done();
+    });
+  });
+
   it('should back with an empty array if the runtime is electron', function (done) {
     process.versions.electron = 'set';
     var v8flags = require('../');
