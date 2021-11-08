@@ -15,8 +15,14 @@ var exclusions = ['--help', '--completion_bash'];
 // This number must be incremented whenever the generated cache file changes.
 var CACHE_VERSION = 3;
 
-var configfile = '.v8flags-' + CACHE_VERSION + '-' + process.versions.v8 +
-  '.' + crypto.createHash('sha256').update(user).digest('hex') + '.json';
+var configfile =
+  '.v8flags-' +
+  CACHE_VERSION +
+  '-' +
+  process.versions.v8 +
+  '.' +
+  crypto.createHash('sha256').update(user).digest('hex') +
+  '.json';
 
 var failureMessage = [
   'Unable to cache a config file for v8flags to your home directory',
