@@ -8,7 +8,6 @@ var path = require('path');
 var crypto = require('crypto');
 var execFile = require('child_process').execFile;
 var configPath = require('./config-path.js')(process.platform);
-var version = require('./package.json').version;
 var env = process.env;
 var user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
 var exclusions = ['--help', '--completion_bash'];
@@ -34,8 +33,8 @@ function fail(err) {
 }
 
 function openConfig(cb) {
-  fs.mkdir(configPath, function() {
-    tryOpenConfig(path.join(configPath, configfile), function(err, fd) {
+  fs.mkdir(configPath, function () {
+    tryOpenConfig(path.join(configPath, configfile), function (err, fd) {
       if (err) {
         return tryOpenConfig(path.join(os.tmpdir(), configfile), cb);
       }
@@ -50,7 +49,7 @@ function tryOpenConfig(configpath, cb) {
     // node should be able to require it directly. if this doesn't
     // throw, we're done!
     var content = require(configpath);
-    process.nextTick(function() {
+    process.nextTick(function () {
       cb(null, content);
     });
   } catch (e) {
@@ -58,7 +57,7 @@ function tryOpenConfig(configpath, cb) {
     // perhaps it has become corrupted. instead of calling back with the
     // content of the file, call back with a file descriptor that we can
     // write the cached data to
-    fs.open(configpath, 'w+', function(err, fd) {
+    fs.open(configpath, 'w+', function (err, fd) {
       if (err) {
         return cb(err);
       }
@@ -89,7 +88,7 @@ function getFlags(cb) {
 
   function runNode(option) {
     pending++;
-    execFile(process.execPath, [option], function(execErr, result) {
+    execFile(process.execPath, [option], function (execErr, result) {
       if (execErr || errored) {
         if (!errored) {
           errored = true;
@@ -104,9 +103,8 @@ function getFlags(cb) {
         regexp.lastIndex = index;
         var matchedFlags = result.match(regexp);
         if (matchedFlags) {
-          flags = flags.concat(matchedFlags
-            .map(normalizeFlagName)
-            .filter(function(name) {
+          flags = flags.concat(
+            matchedFlags.map(normalizeFlagName).filter(function (name) {
               return exclusions.indexOf(name) === -1;
             })
           );
@@ -137,8 +135,8 @@ function writeConfig(fd, flags, cb) {
     }
     buf = new Buffer(json);
   }
-  return fs.write(fd, buf, 0, buf.length, 0 , function(writeErr) {
-    fs.close(fd, function(closeErr) {
+  return fs.write(fd, buf, 0, buf.length, 0, function (writeErr) {
+    fs.close(fd, function (closeErr) {
       var err = writeErr || closeErr;
       if (err) {
         return cb(fail(err), flags);
@@ -148,23 +146,23 @@ function writeConfig(fd, flags, cb) {
   });
 }
 
-module.exports = function(cb) {
+module.exports = function (cb) {
   // bail early if this is not node
   var isElectron = process.versions && process.versions.electron;
   if (isElectron) {
-    return process.nextTick(function() {
+    return process.nextTick(function () {
       cb(null, []);
     });
   }
 
   // attempt to open/read cache file
-  openConfig(function(openErr, result) {
+  openConfig(function (openErr, result) {
     if (!openErr && typeof result !== 'number') {
       return cb(null, result);
     }
     // if the result is not an array, we need to go fetch
     // the flags by invoking node with `--v8-options`
-    getFlags(function(flagsErr, flags) {
+    getFlags(function (flagsErr, flags) {
       // if there was an error fetching the flags, bail immediately
       if (flagsErr) {
         return cb(flagsErr);

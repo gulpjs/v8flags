@@ -17,11 +17,10 @@ function windows() {
 
 // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 function linux() {
-  var username = path.basename(userHome);
   return path.join(env.XDG_CACHE_HOME || path.join(userHome, '.cache'), name);
 }
 
-module.exports = function(platform) {
+module.exports = function (platform) {
   if (!userHome) {
     return os.tmpdir();
   }
