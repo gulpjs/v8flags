@@ -1,5 +1,12 @@
 # Changelog
 
+### [4.0.1](https://www.github.com/gulpjs/v8flags/compare/v4.0.0...v4.0.1) (2023-09-03)
+
+
+### Bug Fixes
+
+* Exclude example flags provided by node ([#66](https://www.github.com/gulpjs/v8flags/issues/66)) ([58f009a](https://www.github.com/gulpjs/v8flags/commit/58f009a2a69365abc2d3af187ef0abdc9e4f5297))
+
 ## [4.0.0](https://www.github.com/gulpjs/v8flags/compare/v3.2.0...v4.0.0) (2021-11-08)
 
 
