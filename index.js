@@ -91,8 +91,8 @@ function getFlags(cb) {
 
     var index = result.indexOf('\nOptions:');
     if (index >= 0) {
+      result = result.slice(index);
       var regexp = /^\s\s--[\w-]+/gm;
-      regexp.lastIndex = index;
       var matchedFlags = result.match(regexp);
       if (matchedFlags) {
         flags = flags.concat(

@@ -225,6 +225,16 @@ describe('v8flags', function () {
       done();
     });
   });
+
+  it('does not detect nodejs example flags', function (done) {
+    eraseHome();
+    var v8flags = require('../');
+    v8flags(function (err, flags) {
+      expect(flags).not.toContain('--flag');
+      expect(flags).not.toContain('--no-flag');
+      done();
+    });
+  });
 });
 
 describe('config-path', function () {
