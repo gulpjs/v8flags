@@ -30,7 +30,7 @@ var failureMessage = [
   'environment by setting HOME=/path/to/home or TEMP=/path/to/temp.',
   'NOTE: the user running this must be able to access provided path.',
   'If all else fails, please open an issue here:',
-  'http://github.com/tkellen/js-v8flags',
+  'http://github.com/gulpjs/v8flags',
 ].join('\n');
 
 function fail(err) {

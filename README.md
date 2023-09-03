@@ -54,7 +54,7 @@ MIT
 [npm-image]: https://img.shields.io/npm/v/v8flags.svg?style=flat-square
 
 [ci-url]: https://github.com/gulpjs/v8flags/actions?query=workflow:dev
-[ci-image]: https://img.shields.io/github/workflow/status/gulpjs/v8flags/dev?style=flat-square
+[ci-image]: https://img.shields.io/github/actions/workflow/status/gulpjs/v8flags/dev.yml?branch=master&style=flat-square
 
 [coveralls-url]: https://coveralls.io/r/gulpjs/v8flags
 [coveralls-image]: https://img.shields.io/coveralls/gulpjs/v8flags/master.svg?style=flat-square
