@@ -52,7 +52,7 @@ function cleanup() {
   files.forEach(function (file) {
     try {
       fs.unlinkSync(file);
-    } catch (e) {
+    } catch {
       // Ignore error
     }
   });

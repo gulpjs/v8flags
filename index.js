@@ -58,7 +58,7 @@ function tryOpenConfig(configpath, cb) {
     process.nextTick(function () {
       cb(null, content);
     });
-  } catch (e) {
+  } catch {
     // if requiring the config file failed, maybe it doesn't exist, or
     // perhaps it has become corrupted. instead of calling back with the
     // content of the file, call back with a file descriptor that we can
