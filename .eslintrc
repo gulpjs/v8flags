@@ -1,6 +1,0 @@
-{
-  "extends": "gulp",
-  "globals": {
-    "Uint8Array": true
-  }
-}
