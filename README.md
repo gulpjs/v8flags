@@ -13,7 +13,7 @@ Get available v8 and Node.js flags.
 ## Usage
 
 ```js
-const v8flags = require('v8flags');
+const v8flags = require("v8flags");
 
 v8flags(function (err, results) {
   console.log(results);
