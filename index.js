@@ -2,39 +2,39 @@
 // how to patch v8 so that these options would just be available on the
 // process object.
 
-var os = require('os');
-var fs = require('fs');
-var path = require('path');
-var crypto = require('crypto');
-var execFile = require('child_process').execFile;
-var configPath = require('./config-path.js')(process.platform);
+var os = require("os");
+var fs = require("fs");
+var path = require("path");
+var crypto = require("crypto");
+var execFile = require("child_process").execFile;
+var configPath = require("./config-path.js")(process.platform);
 var env = process.env;
-var user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || '';
-var exclusions = ['--help', '--completion-bash'];
+var user = env.LOGNAME || env.USER || env.LNAME || env.USERNAME || "";
+var exclusions = ["--help", "--completion-bash"];
 
 // This number must be incremented whenever the generated cache file changes.
 var CACHE_VERSION = 3;
 
 var configfile =
-  '.v8flags-' +
+  ".v8flags-" +
   CACHE_VERSION +
-  '-' +
+  "-" +
   process.versions.v8 +
-  '.' +
-  crypto.createHash('sha256').update(user).digest('hex') +
-  '.json';
+  "." +
+  crypto.createHash("sha256").update(user).digest("hex") +
+  ".json";
 
 var failureMessage = [
-  'Unable to cache a config file for v8flags to your home directory',
-  'or a temporary folder. To fix this problem, please correct your',
-  'environment by setting HOME=/path/to/home or TEMP=/path/to/temp.',
-  'NOTE: the user running this must be able to access provided path.',
-  'If all else fails, please open an issue here:',
-  'http://github.com/gulpjs/v8flags',
-].join('\n');
+  "Unable to cache a config file for v8flags to your home directory",
+  "or a temporary folder. To fix this problem, please correct your",
+  "environment by setting HOME=/path/to/home or TEMP=/path/to/temp.",
+  "NOTE: the user running this must be able to access provided path.",
+  "If all else fails, please open an issue here:",
+  "http://github.com/gulpjs/v8flags",
+].join("\n");
 
 function fail(err) {
-  err.message += '\n\n' + failureMessage;
+  err.message += "\n\n" + failureMessage;
   return err;
 }
 
@@ -58,12 +58,12 @@ function tryOpenConfig(configpath, cb) {
     process.nextTick(function () {
       cb(null, content);
     });
-  } catch (e) {
+  } catch {
     // if requiring the config file failed, maybe it doesn't exist, or
     // perhaps it has become corrupted. instead of calling back with the
     // content of the file, call back with a file descriptor that we can
     // write the cached data to
-    fs.open(configpath, 'w+', function (err, fd) {
+    fs.open(configpath, "w+", function (err, fd) {
       if (err) {
         return cb(err);
       }
@@ -83,13 +83,13 @@ function normalizeFlagName(flag) {
 function getFlags(cb) {
   var flags = Array.from(process.allowedNodeEnvironmentFlags);
 
-  execFile(process.execPath, ['--v8-options'], function (execErr, result) {
+  execFile(process.execPath, ["--v8-options"], function (execErr, result) {
     if (execErr) {
       cb(execErr);
       return;
     }
 
-    var index = result.indexOf('\nOptions:');
+    var index = result.indexOf("\nOptions:");
     if (index >= 0) {
       result = result.slice(index);
       var regexp = /^\s\s--[\w-]+/gm;
@@ -98,7 +98,7 @@ function getFlags(cb) {
         flags = flags.concat(
           matchedFlags.map(normalizeFlagName).filter(function (name) {
             return exclusions.indexOf(name) === -1;
-          })
+          }),
         );
       }
     }
@@ -134,7 +134,7 @@ module.exports = function (cb) {
 
   // attempt to open/read cache file
   openConfig(function (openErr, result) {
-    if (!openErr && typeof result !== 'number') {
+    if (!openErr && typeof result !== "number") {
       return cb(null, result);
     }
     // if the result is not an array, we need to go fetch

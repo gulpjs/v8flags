@@ -1,15 +1,15 @@
-var fs = require('fs');
-var path = require('path');
-var os = require('os');
+var fs = require("fs");
+var path = require("path");
+var os = require("os");
 
-var async = require('async');
-var expect = require('expect');
-var proxyquire = require('proxyquire');
+var async = require("async");
+var expect = require("expect");
+var proxyquire = require("proxyquire");
 
 var env = process.env;
 
 function makeHomeCacheDir() {
-  var homeCacheDir = path.join(os.homedir(), '.cache');
+  var homeCacheDir = path.join(os.homedir(), ".cache");
   if (!fs.existsSync(homeCacheDir)) {
     fs.mkdirSync(homeCacheDir);
   }
@@ -43,7 +43,7 @@ function resetTemp() {
 }
 
 function cleanup() {
-  var v8flags = require('../');
+  var v8flags = require("../");
 
   var files = [
     path.resolve(v8flags.configPath, v8flags.configfile),
@@ -52,24 +52,24 @@ function cleanup() {
   files.forEach(function (file) {
     try {
       fs.unlinkSync(file);
-    } catch (e) {
+    } catch {
       // Ignore error
     }
   });
 
-  delete require.cache[require.resolve('../')];
-  delete require.cache[require.resolve('../config-path')];
+  delete require.cache[require.resolve("../")];
+  delete require.cache[require.resolve("../config-path")];
 
   delete process.versions.electron;
 }
 
-describe('v8flags', function () {
+describe("v8flags", function () {
   before(makeHomeCacheDir);
   beforeEach(cleanup);
   afterEach(cleanup);
 
-  it('should cache and call back with the v8 flags for the running process', function (done) {
-    var v8flags = require('../');
+  it("should cache and call back with the v8 flags for the running process", function (done) {
+    var v8flags = require("../");
     var configfile = path.resolve(v8flags.configPath, v8flags.configfile);
     v8flags(function (err, flags) {
       expect(Array.isArray(flags)).toEqual(true);
@@ -83,8 +83,8 @@ describe('v8flags', function () {
     });
   });
 
-  it('should not append the file when multiple calls happen concurrently and the config file does not yet exist', function (done) {
-    var v8flags = require('../');
+  it("should not append the file when multiple calls happen concurrently and the config file does not yet exist", function (done) {
+    var v8flags = require("../");
     async.parallel([v8flags, v8flags, v8flags], function () {
       v8flags(function () {
         done();
@@ -92,10 +92,10 @@ describe('v8flags', function () {
     });
   });
 
-  it('should fall back to writing to a temp dir if user home is unwriteable', function (done) {
+  it("should fall back to writing to a temp dir if user home is unwriteable", function (done) {
     eraseHome();
-    env.HOME = env.LOCALAPPDATA = path.join(__dirname, 'does-not-exist');
-    var v8flags = require('../');
+    env.HOME = env.LOCALAPPDATA = path.join(__dirname, "does-not-exist");
+    var v8flags = require("../");
     var configfile = path.resolve(os.tmpdir(), v8flags.configfile);
     v8flags(function () {
       expect(fs.existsSync(configfile)).toEqual(true);
@@ -103,11 +103,11 @@ describe('v8flags', function () {
     });
   });
 
-  it('should return flags even if an error is thrown', function (done) {
+  it("should return flags even if an error is thrown", function (done) {
     eraseHome();
-    setTemp('/nope');
+    setTemp("/nope");
     env.HOME = env.LOCALAPPDATA = null;
-    var v8flags = require('../');
+    var v8flags = require("../");
     v8flags(function (err, flags) {
       resetTemp();
       expect(err).not.toBeNull();
@@ -116,18 +116,18 @@ describe('v8flags', function () {
     });
   });
 
-  it('always has node flags, even when non-matching return from node --v8-options', function (done) {
-    if (os.platform() === 'win32') {
+  it("always has node flags, even when non-matching return from node --v8-options", function (done) {
+    if (os.platform() === "win32") {
       this.skip();
     }
 
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
 
     // Save original execPath
     var execPath = process.execPath;
     // Set execPath to our fake-bin
-    process.execPath = __dirname + '/fake-bin';
+    process.execPath = __dirname + "/fake-bin";
 
     v8flags(function (err, flags) {
       expect(err).toBeNull();
@@ -138,18 +138,18 @@ describe('v8flags', function () {
     });
   });
 
-  it('fails with an error if the CLI crashes', function (done) {
-    if (os.platform() === 'win32') {
+  it("fails with an error if the CLI crashes", function (done) {
+    if (os.platform() === "win32") {
       this.skip();
     }
 
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
 
     // Save original execPath
     var execPath = process.execPath;
     // Set execPath to our fake-bin
-    process.execPath = __dirname + '/throw-bin';
+    process.execPath = __dirname + "/throw-bin";
 
     v8flags(function (err, flags) {
       expect(err).not.toBeNull();
@@ -160,9 +160,9 @@ describe('v8flags', function () {
     });
   });
 
-  it('should back with an empty array if the runtime is electron', function (done) {
-    process.versions.electron = 'set';
-    var v8flags = require('../');
+  it("should back with an empty array if the runtime is electron", function (done) {
+    process.versions.electron = "set";
+    var v8flags = require("../");
     v8flags(function (err, flags) {
       expect(flags.length).toEqual(0);
       expect(Array.isArray(flags)).toEqual(true);
@@ -170,131 +170,131 @@ describe('v8flags', function () {
     });
   });
 
-  it('should handle usernames which are invalid file paths', function (done) {
+  it("should handle usernames which are invalid file paths", function (done) {
     eraseHome();
-    env.USER = 'invalid/user\\name';
-    var v8flags = require('../');
+    env.USER = "invalid/user\\name";
+    var v8flags = require("../");
     v8flags(function (err) {
       expect(err).toBe(null);
       done();
     });
   });
 
-  it('should handle option names with multiple words', function (done) {
+  it("should handle option names with multiple words", function (done) {
     if (parseInt(process.versions.node) < 4) {
       this.skip();
     }
 
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
     v8flags(function (err, flags) {
-      expect(flags).toContain('--expose-gc-as');
+      expect(flags).toContain("--expose-gc-as");
       done();
     });
   });
 
-  it('should handle undefined usernames', function (done) {
+  it("should handle undefined usernames", function (done) {
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
     v8flags(function (err) {
       expect(err).toBe(null);
       done();
     });
   });
 
-  it('should detect non-v8 flags', function (done) {
+  it("should detect non-v8 flags", function (done) {
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
     v8flags(function (err, flags) {
-      expect(flags).toContain('--no-deprecation');
+      expect(flags).toContain("--no-deprecation");
       done();
     });
   });
 
-  it('does not detect colliding flags from node', function (done) {
+  it("does not detect colliding flags from node", function (done) {
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
     v8flags(function (err, flags) {
-      expect(flags).not.toContain('--exec');
-      expect(flags).not.toContain('--print');
-      expect(flags).not.toContain('--interactive');
-      expect(flags).not.toContain('--version');
+      expect(flags).not.toContain("--exec");
+      expect(flags).not.toContain("--print");
+      expect(flags).not.toContain("--interactive");
+      expect(flags).not.toContain("--version");
       // Exclusions
-      expect(flags).not.toContain('--completion-bash');
-      expect(flags).not.toContain('--help');
+      expect(flags).not.toContain("--completion-bash");
+      expect(flags).not.toContain("--help");
       done();
     });
   });
 
-  it('does not detect nodejs example flags', function (done) {
+  it("does not detect nodejs example flags", function (done) {
     eraseHome();
-    var v8flags = require('../');
+    var v8flags = require("../");
     v8flags(function (err, flags) {
-      expect(flags).not.toContain('--flag');
-      expect(flags).not.toContain('--no-flag');
+      expect(flags).not.toContain("--flag");
+      expect(flags).not.toContain("--no-flag");
       done();
     });
   });
 });
 
-describe('config-path', function () {
-  var moduleName = 'js-v8flags';
+describe("config-path", function () {
+  var moduleName = "js-v8flags";
 
   before(function () {
-    env.HOME = env.USERPROFILE = 'somehome';
+    env.HOME = env.USERPROFILE = "somehome";
   });
 
   after(cleanup);
 
-  it('should return default linux path in other environments', function (done) {
-    var configPath = require('../config-path.js')('other');
+  it("should return default linux path in other environments", function (done) {
+    var configPath = require("../config-path.js")("other");
 
-    expect(configPath).toEqual(path.join(env.HOME, '.cache', moduleName));
+    expect(configPath).toEqual(path.join(env.HOME, ".cache", moduleName));
     done();
   });
 
-  it('should return default macos path in darwin environment', function (done) {
-    var configPath = require('../config-path.js')('darwin');
+  it("should return default macos path in darwin environment", function (done) {
+    var configPath = require("../config-path.js")("darwin");
 
     expect(configPath).toEqual(
-      path.join(env.HOME, 'Library', 'Caches', moduleName)
+      path.join(env.HOME, "Library", "Caches", moduleName),
     );
     done();
   });
 
-  it('should return default windows path in win32 environment', function (done) {
-    var configPath = require('../config-path.js')('win32');
+  it("should return default windows path in win32 environment", function (done) {
+    var configPath = require("../config-path.js")("win32");
 
     expect(configPath).toEqual(
-      path.join(env.HOME, 'AppData', 'Local', moduleName)
+      path.join(env.HOME, "AppData", "Local", moduleName),
     );
     done();
   });
 
-  it('should return fallback path when homedir is falsy', function (done) {
-    var configPath = proxyquire('../config-path.js', {
+  it("should return fallback path when homedir is falsy", function (done) {
+    var configPath = proxyquire("../config-path.js", {
       os: {
         homedir: function () {
           return null;
         },
       },
-    })('win32');
+    })("win32");
 
     expect(configPath).toEqual(os.tmpdir());
     done();
   });
 });
 
-describe('platform specific tests', function () {
+describe("platform specific tests", function () {
   before(cleanup);
 
-  it('should return fallback path when no home is found under windows', function (done) {
-    if (os.platform() !== 'win32' || !process.version.match(/0\.10|0\.12/)) {
+  it("should return fallback path when no home is found under windows", function (done) {
+    if (os.platform() !== "win32" || !process.version.match(/0\.10|0\.12/)) {
       this.skip();
     }
 
     eraseHome();
-    var configPath = require('../config-path.js')('win32');
+    var configPath = require("../config-path.js")("win32");
 
     expect(configPath).toEqual(os.tmpdir());
     done();

@@ -1,23 +1,23 @@
-var os = require('os');
-var path = require('path');
+var os = require("os");
+var path = require("path");
 var userHome = os.homedir();
 
 var env = process.env;
-var name = 'js-v8flags';
+var name = "js-v8flags";
 
 function macos() {
-  var library = path.join(userHome, 'Library');
-  return path.join(library, 'Caches', name);
+  var library = path.join(userHome, "Library");
+  return path.join(library, "Caches", name);
 }
 
 function windows() {
-  var appData = env.LOCALAPPDATA || path.join(userHome, 'AppData', 'Local');
+  var appData = env.LOCALAPPDATA || path.join(userHome, "AppData", "Local");
   return path.join(appData, name);
 }
 
 // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 function linux() {
-  return path.join(env.XDG_CACHE_HOME || path.join(userHome, '.cache'), name);
+  return path.join(env.XDG_CACHE_HOME || path.join(userHome, ".cache"), name);
 }
 
 module.exports = function (platform) {
@@ -25,11 +25,11 @@ module.exports = function (platform) {
     return os.tmpdir();
   }
 
-  if (platform === 'darwin') {
+  if (platform === "darwin") {
     return macos();
   }
 
-  if (platform === 'win32') {
+  if (platform === "win32") {
     return windows();
   }
 
