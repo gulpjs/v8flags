@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/gulpjs/v8flags/compare/v4.0.1...v5.0.0) (2026-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Normalize repository, dropping Node <22.15.0 ([#70](https://github.com/gulpjs/v8flags/issues/70))
+
+### Miscellaneous Chores
+
+* Normalize repository, dropping Node &lt;22.15.0 ([#70](https://github.com/gulpjs/v8flags/issues/70)) ([89661b0](https://github.com/gulpjs/v8flags/commit/89661b0409a0361b7233c25e4c40783ba114a9ad))
+
 ### [4.0.1](https://www.github.com/gulpjs/v8flags/compare/v4.0.0...v4.0.1) (2023-09-03)
 
 
