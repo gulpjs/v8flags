@@ -300,7 +300,7 @@ describe("platform specific tests", function () {
   it("should return fallback path when no home is found under windows", function (t) {
     if (os.platform() !== "win32" || !process.version.match(/0\.10|0\.12/)) {
       t.skip();
-      return done();
+      return;
     }
 
     eraseHome();
