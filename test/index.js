@@ -125,7 +125,7 @@ describe("v8flags", function () {
   it("always has node flags, even when non-matching return from node --v8-options", function (t, done) {
     if (os.platform() === "win32") {
       t.skip();
-      return;
+      return done();
     }
 
     eraseHome();
@@ -152,7 +152,7 @@ describe("v8flags", function () {
   it("fails with an error if the CLI crashes", function (t, done) {
     if (os.platform() === "win32") {
       t.skip();
-      return;
+      return done();
     }
 
     eraseHome();
@@ -300,7 +300,7 @@ describe("platform specific tests", function () {
   it("should return fallback path when no home is found under windows", function (t) {
     if (os.platform() !== "win32" || !process.version.match(/0\.10|0\.12/)) {
       t.skip();
-      return;
+      return done();
     }
 
     eraseHome();
