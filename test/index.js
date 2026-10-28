@@ -282,16 +282,16 @@ describe("config-path", function () {
   });
 
   it("should return fallback path when homedir is falsy", function (t) {
-    t.mock.module("os", {
-      defaultExport: {
-        ...os,
+    var fallback = "/some/fallback/via/tmpdir";
+    t.mock.module("node:os", {
+      namedExports: {
         homedir: () => null,
+        tmpdir: () => fallback,
       },
     });
-    //delete require.cache[require.resolve("../config-path.js")];
     const configPath = require("../config-path.js")("win32");
 
-    assert.strictEqual(configPath, os.tmpdir());
+    assert.strictEqual(configPath, fallback);
   });
 });
 
