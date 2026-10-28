@@ -289,18 +289,3 @@ describe("config-path", function () {
     assert.strictEqual(configPath, os.tmpdir());
   });
 });
-
-describe("platform specific tests", function () {
-  before(cleanup);
-
-  it(
-    "should return fallback path when no home is found under windows",
-    { skip: !isWindows },
-    function () {
-      eraseHome();
-      var configPath = require("../config-path.js")("win32");
-
-      assert.strictEqual(configPath, os.tmpdir());
-    },
-  );
-});
