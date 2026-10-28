@@ -254,8 +254,8 @@ describe("config-path", function () {
     eraseHome();
     env.HOME = env.USERPROFILE = "somehome";
   });
-
-  after(cleanup);
+  beforeEach(cleanup);
+  afterEach(cleanup);
 
   it("should return default linux path in other environments", function () {
     var configPath = require("../config-path.js")("other");
