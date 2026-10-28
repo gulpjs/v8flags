@@ -112,7 +112,7 @@ describe("v8flags", function () {
     var v8flags = require("../");
     v8flags(function (err, flags) {
       resetTemp();
-      assert.notStrictEqual(err, null);
+      assert.ok(err);
       assert.notStrictEqual(flags, undefined);
       done();
     });
@@ -131,7 +131,7 @@ describe("v8flags", function () {
       process.execPath = __dirname + "/fake-bin";
 
       v8flags(function (err, flags) {
-        assert.strictEqual(err, null);
+        assert.ifError(err);
         assert.deepStrictEqual(
           flags,
           Array.from(process.allowedNodeEnvironmentFlags),
@@ -157,7 +157,7 @@ describe("v8flags", function () {
       process.execPath = __dirname + "/throw-bin";
 
       v8flags(function (err, flags) {
-        assert.notStrictEqual(err, null);
+        assert.ok(err);
         assert.strictEqual(flags, undefined);
         // Restore original execPath
         process.execPath = execPath;
@@ -170,6 +170,7 @@ describe("v8flags", function () {
     process.versions.electron = "set";
     var v8flags = require("../");
     v8flags(function (err, flags) {
+      assert.ifError(err);
       assert.strictEqual(flags.length, 0);
       assert.strictEqual(Array.isArray(flags), true);
       done();
@@ -181,7 +182,7 @@ describe("v8flags", function () {
     env.USER = "invalid/user\\name";
     var v8flags = require("../");
     v8flags(function (err) {
-      assert.strictEqual(err, null);
+      assert.ifError(err);
       done();
     });
   });
@@ -190,6 +191,7 @@ describe("v8flags", function () {
     eraseHome();
     var v8flags = require("../");
     v8flags(function (err, flags) {
+      assert.ifError(err);
       assert.strictEqual(flags.includes("--expose-gc-as"), true);
       done();
     });
@@ -199,7 +201,7 @@ describe("v8flags", function () {
     eraseHome();
     var v8flags = require("../");
     v8flags(function (err) {
-      assert.strictEqual(err, null);
+      assert.ifError(err);
       done();
     });
   });
@@ -208,6 +210,7 @@ describe("v8flags", function () {
     eraseHome();
     var v8flags = require("../");
     v8flags(function (err, flags) {
+      assert.ifError(err);
       assert.strictEqual(flags.includes("--no-deprecation"), true);
       done();
     });
@@ -217,6 +220,7 @@ describe("v8flags", function () {
     eraseHome();
     var v8flags = require("../");
     v8flags(function (err, flags) {
+      assert.ifError(err);
       assert.strictEqual(flags.includes("--exec"), false);
       assert.strictEqual(flags.includes("--print"), false);
       assert.strictEqual(flags.includes("--interactive"), false);
@@ -232,6 +236,7 @@ describe("v8flags", function () {
     eraseHome();
     var v8flags = require("../");
     v8flags(function (err, flags) {
+      assert.ifError(err);
       assert.strictEqual(flags.includes("--flag"), false);
       assert.strictEqual(flags.includes("--no-flag"), false);
       done();
