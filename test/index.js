@@ -3,7 +3,6 @@ var path = require("node:path");
 var os = require("node:os");
 var assert = require("node:assert");
 var {
-  after,
   afterEach,
   before,
   beforeEach,
