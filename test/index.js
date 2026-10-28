@@ -125,10 +125,7 @@ describe("v8flags", function () {
       eraseHome();
       var v8flags = require("../");
 
-      // Save original execPath
-      var execPath = process.execPath;
-      // Set execPath to our fake-bin
-      process.execPath = __dirname + "/fake-bin";
+      t.mock.property(process, "execPath", __dirname + "/fake-bin");
 
       v8flags(function (err, flags) {
         assert.ifError(err);
@@ -136,9 +133,6 @@ describe("v8flags", function () {
           flags,
           Array.from(process.allowedNodeEnvironmentFlags),
         );
-
-        // Restore original execPath
-        process.execPath = execPath;
         done();
       });
     },
@@ -151,16 +145,11 @@ describe("v8flags", function () {
       eraseHome();
       var v8flags = require("../");
 
-      // Save original execPath
-      var execPath = process.execPath;
-      // Set execPath to our fake-bin
-      process.execPath = __dirname + "/throw-bin";
+      t.mock.property(process, "execPath", __dirname + "/throw-bin");
 
       v8flags(function (err, flags) {
         assert.ok(err);
         assert.strictEqual(flags, undefined);
-        // Restore original execPath
-        process.execPath = execPath;
         done();
       });
     },
