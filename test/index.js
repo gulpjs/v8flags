@@ -118,10 +118,11 @@ describe("v8flags", function () {
     v8flags(function (err, flags) {
       resetTemp();
       assert.notStrictEqual(err, null);
-      assert.notStrictEqual(flags, false);
+      assert.notStrictEqual(flags, undefined);
       done();
     });
   });
+
   it("always has node flags, even when non-matching return from node --v8-options", function (t, done) {
     if (os.platform() === "win32") {
       t.skip();
@@ -138,7 +139,7 @@ describe("v8flags", function () {
 
     v8flags(function (err, flags) {
       assert.strictEqual(err, null);
-      assert.notStrictEqual(
+      assert.deepStrictEqual(
         flags,
         Array.from(process.allowedNodeEnvironmentFlags),
       );
@@ -232,7 +233,7 @@ describe("v8flags", function () {
       assert.strictEqual(flags.includes("--print"), false);
       assert.strictEqual(flags.includes("--interactive"), false);
       assert.strictEqual(flags.includes("--version"), false);
-
+      // Exclusions
       assert.strictEqual(flags.includes("---completion-bash"), false);
       assert.strictEqual(flags.includes("----help"), false);
       done();
