@@ -127,7 +127,7 @@ describe("v8flags", function () {
 
   it(
     "always has node flags, even when non-matching return from node --v8-options",
-    { skip: isWindows() },
+    { skip: isWindows },
     function (t, done) {
       eraseHome();
       var v8flags = require("../");
@@ -153,7 +153,7 @@ describe("v8flags", function () {
 
   it(
     "fails with an error if the CLI crashes",
-    { skip: isWindows() },
+    { skip: isWindows },
     function (t, done) {
       eraseHome();
       var v8flags = require("../");
@@ -295,7 +295,7 @@ describe("platform specific tests", function () {
 
   it(
     "should return fallback path when no home is found under windows",
-    { skip: !isWindows() },
+    { skip: !isWindows },
     function () {
       eraseHome();
       var configPath = require("../config-path.js")("win32");
