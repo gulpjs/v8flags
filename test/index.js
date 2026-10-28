@@ -1,8 +1,6 @@
 var fs = require("node:fs");
 var path = require("node:path");
 var os = require("node:os");
-
-var async = require("async");
 var assert = require("node:assert");
 var {
   after,
@@ -12,6 +10,8 @@ var {
   describe,
   it,
 } = require("node:test");
+
+var async = require("async");
 
 var env = process.env;
 
