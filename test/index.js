@@ -22,6 +22,10 @@ function makeHomeCacheDir() {
   }
 }
 
+var isWindows = () => {
+  os.platform === "win32";
+};
+
 function eraseHome() {
   delete env.HOME;
   delete env.USERPROFILE;
@@ -123,55 +127,53 @@ describe("v8flags", function () {
     });
   });
 
-  it("always has node flags, even when non-matching return from node --v8-options", function (t, done) {
-    if (os.platform() === "win32") {
-      t.skip();
-      return done();
-    }
+  it(
+    "always has node flags, even when non-matching return from node --v8-options",
+    { skip: isWindows() },
+    function (t, done) {
+      eraseHome();
+      var v8flags = require("../");
 
-    eraseHome();
-    var v8flags = require("../");
+      // Save original execPath
+      var execPath = process.execPath;
+      // Set execPath to our fake-bin
+      process.execPath = __dirname + "/fake-bin";
 
-    // Save original execPath
-    var execPath = process.execPath;
-    // Set execPath to our fake-bin
-    process.execPath = __dirname + "/fake-bin";
+      v8flags(function (err, flags) {
+        assert.strictEqual(err, null);
+        assert.deepStrictEqual(
+          flags,
+          Array.from(process.allowedNodeEnvironmentFlags),
+        );
 
-    v8flags(function (err, flags) {
-      assert.strictEqual(err, null);
-      assert.deepStrictEqual(
-        flags,
-        Array.from(process.allowedNodeEnvironmentFlags),
-      );
+        // Restore original execPath
+        process.execPath = execPath;
+        done();
+      });
+    },
+  );
 
-      // Restore original execPath
-      process.execPath = execPath;
-      done();
-    });
-  });
+  it(
+    "fails with an error if the CLI crashes",
+    { skip: isWindows() },
+    function (t, done) {
+      eraseHome();
+      var v8flags = require("../");
 
-  it("fails with an error if the CLI crashes", function (t, done) {
-    if (os.platform() === "win32") {
-      t.skip();
-      return done();
-    }
+      // Save original execPath
+      var execPath = process.execPath;
+      // Set execPath to our fake-bin
+      process.execPath = __dirname + "/throw-bin";
 
-    eraseHome();
-    var v8flags = require("../");
-
-    // Save original execPath
-    var execPath = process.execPath;
-    // Set execPath to our fake-bin
-    process.execPath = __dirname + "/throw-bin";
-
-    v8flags(function (err, flags) {
-      assert.notStrictEqual(err, null);
-      assert.strictEqual(flags, undefined);
-      // Restore original execPath
-      process.execPath = execPath;
-      done();
-    });
-  });
+      v8flags(function (err, flags) {
+        assert.notStrictEqual(err, null);
+        assert.strictEqual(flags, undefined);
+        // Restore original execPath
+        process.execPath = execPath;
+        done();
+      });
+    },
+  );
 
   it("should back with an empty array if the runtime is electron", function (t, done) {
     process.versions.electron = "set";
@@ -194,11 +196,6 @@ describe("v8flags", function () {
   });
 
   it("should handle option names with multiple words", function (t, done) {
-    if (parseInt(process.versions.node) < 4) {
-      this.skip();
-      return;
-    }
-
     eraseHome();
     var v8flags = require("../");
     v8flags(function (err, flags) {
@@ -298,15 +295,14 @@ describe("config-path", function () {
 describe("platform specific tests", function () {
   before(cleanup);
 
-  it("should return fallback path when no home is found under windows", function (t) {
-    if (os.platform() !== "win32" || !process.version.match(/0\.10|0\.12/)) {
-      t.skip();
-      return;
-    }
+  it(
+    "should return fallback path when no home is found under windows",
+    { skip: !isWindows() },
+    function () {
+      eraseHome();
+      var configPath = require("../config-path.js")("win32");
 
-    eraseHome();
-    var configPath = require("../config-path.js")("win32");
-
-    assert.strictEqual(configPath, os.tmpdir());
-  });
+      assert.strictEqual(configPath, os.tmpdir());
+    },
+  );
 });
