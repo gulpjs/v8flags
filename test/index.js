@@ -22,9 +22,7 @@ function makeHomeCacheDir() {
   }
 }
 
-var isWindows = () => {
-  os.platform === "win32";
-};
+var isWindows = os.platform() === "win32";
 
 function eraseHome() {
   delete env.HOME;
