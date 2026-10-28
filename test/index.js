@@ -2,13 +2,7 @@ var fs = require("node:fs");
 var path = require("node:path");
 var os = require("node:os");
 var assert = require("node:assert");
-var {
-  afterEach,
-  before,
-  beforeEach,
-  describe,
-  it,
-} = require("node:test");
+var { afterEach, before, beforeEach, describe, it } = require("node:test");
 
 var async = require("async");
 
